@@ -1,0 +1,15 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    jcenter()
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+}
+
+dependencies {
+    compileOnly files('./bukkit-1.4.7.jar')
+    compile files('../core/message-library/build/libs/message-library.jar')
+    compile files('../core/network-library/build/libs/network-library.jar')
+}

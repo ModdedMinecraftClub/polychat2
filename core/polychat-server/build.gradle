@@ -1,0 +1,18 @@
+plugins{
+	id 'java'
+	id 'application'
+}
+
+mainClassName = 'club.moddedminecraft.polychat.core.server.PolychatServer'
+
+dependencies {
+	implementation ('net.dv8tion:JDA:4.2.0_188') {
+		exclude module: 'opus-java'
+	}
+
+	dependencies {
+		implementation project(':network-library')
+		implementation project(':message-library')
+	}
+
+}
