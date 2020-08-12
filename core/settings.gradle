@@ -1,4 +1,3 @@
 rootProject.name = 'poller-core'
 include 'message-library'
 include 'network-library'
-include 'polychat-server'
