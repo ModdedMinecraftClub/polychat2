@@ -5,14 +5,19 @@ plugins{
 
 mainClassName = 'club.moddedminecraft.polychat.core.server.PolychatServer'
 
+repositories{
+	mavenCentral()
+	jcenter()
+}
+
 dependencies {
 	implementation ('net.dv8tion:JDA:4.2.0_188') {
 		exclude module: 'opus-java'
 	}
 
 	dependencies {
-		implementation project(':network-library')
-		implementation project(':message-library')
+	    compile files('../core/message-library/build/libs/message-library.jar')
+	    compile files('../core/network-library/build/libs/network-library.jar')
 	}
 
 }
