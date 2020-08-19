@@ -1,6 +1,6 @@
 package club.moddedminecraft.polychat.core.messagelibrary;
 
-public class SerializableRegularMessage {
+public class SerializableRegularMessage implements ISerializableMessage {
     private int serverId;
     private long messageTime;
     private String messageAuthor;
