@@ -56,6 +56,24 @@ public final class Client{
         return messages;
     }
 
+    /**
+     * Sends a message to the connected server
+     *
+     * @param message The message to send
+     * @throws IOException If there are networking errors and a new connection can't be established. If there is an
+     *                     error here, it is recommended that you print the exception to the console and call
+     *                     <code>poll()</code> again with the normal schedule.
+     */
+    public void sendMessage(byte[] message) throws IOException{
+        if(client == null){
+            reinitializeClient();
+        }
+
+        if(client != null){
+            client.sendMessage(message);
+        }
+    }
+
     private void reinitializeClient() throws IOException{
         client = null;
         long currentTime = System.currentTimeMillis();
