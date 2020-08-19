@@ -1,16 +1,16 @@
 package club.moddedminecraft.polychat.core.messagelibrary;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class SerializableCommand implements ISerializableMessage {
     private String serverId;
     private String defaultCommand;
-    private List<String> args;
+    private ArrayList<String> args;
 
     public SerializableCommand() {
     }
 
-    public SerializableCommand(String serverId, String defaultCommand, List<String> args) {
+    public SerializableCommand(String serverId, String defaultCommand, ArrayList<String> args) {
         this.serverId = serverId;
         this.defaultCommand = defaultCommand;
         this.args = args;
@@ -33,11 +33,11 @@ public class SerializableCommand implements ISerializableMessage {
         this.defaultCommand = defaultCommand;
     }
 
-    public List<String> getArgs() {
+    public ArrayList<String> getArgs() {
         return args;
     }
 
-    public void setArgs(List<String> args) {
+    public void setArgs(ArrayList<String> args) {
         this.args = args;
     }
 }
