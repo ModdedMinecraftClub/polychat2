@@ -15,7 +15,7 @@ buildscript {
 }
 
 dependencies {
-  compile 'com.google.protobuf:protobuf-java:3.0.0'
+  compileOnly 'com.google.protobuf:protobuf-java:3.0.0'
 }
 
 protobuf {

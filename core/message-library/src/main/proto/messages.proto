@@ -4,15 +4,22 @@ package polychat2;
 
 option java_package = "club.moddedminecraft.polychat.core.messagelibrary";
 
-message RegularMessage {
-    int32 serverId = 1;
-    int64 messageTime = 2;
-    string messageAuthor = 3;
-    string messageContent = 4;
-}
+message Message {
+    oneof innerMessage {
+        RegularMessage regularMessage = 1;
+        Command command = 2;
+    }
 
-message Command {
-    string discordCommandName = 1;
-    string defaultCommand = 2;
-    string args = 3;
+    message RegularMessage {
+        int32 serverId = 1;
+        int64 messageTime = 2;
+        string messageAuthor = 3;
+        string messageContent = 4;
+    }
+
+    message Command {
+        string discordCommandName = 1;
+        string defaultCommand = 2;
+        string args = 3;
+    }
 }
