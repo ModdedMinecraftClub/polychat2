@@ -73,9 +73,9 @@ public final class Server{
                 }catch(IOException e){
                     e.printStackTrace(); //we've done our best effort to shut this client down.... and it will be abandoned anyway, so we have to ignore this error (we do what we must because we can)
                 }
-                return false;
-            }else{
                 return true;
+            }else{
+                return false;
             }
         });
 

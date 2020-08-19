@@ -75,11 +75,14 @@ public final class Client{
     }
 
     private void reinitializeClient() throws IOException{
+        if(client != null){
+            client.shutdown();
+        }
+
         client = null;
         long currentTime = System.currentTimeMillis();
         if(currentTime - lastReconnectionAttempt >= RECONNECTION_INTERVAL){
             lastReconnectionAttempt = currentTime;
-            client.shutdown();
             client = new ConnectedClient(SocketChannel.open(new InetSocketAddress(ip, port)), bufferSize);
         }
     }

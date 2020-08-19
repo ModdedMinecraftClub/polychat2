@@ -13,7 +13,7 @@ import java.util.List;
 public final class ConnectedClient{
     private static final int MESSAGE_HEADER_LENGTH_IN_BYTES = 4;
     private final SocketChannel socketChannel;
-    private ClientStatus currentStatus = ClientStatus.RECEIVING_LENGTH;
+    private ClientStatus currentStatus = ClientStatus.CONNECTING;
     private ByteBuffer readBuffer;
     private ByteBuffer sendBuffer;
     private ArrayDeque<byte[]> sendQueue;
@@ -28,9 +28,20 @@ public final class ConnectedClient{
         //setup initial state for poll() function
         readBuffer.clear();
         readBuffer.limit(MESSAGE_HEADER_LENGTH_IN_BYTES);
+
+        sendBuffer.clear();
+        sendBuffer.limit(0);
     }
 
     boolean poll(List<Message> messageList){
+        if(currentStatus == ClientStatus.CONNECTING){
+            if(socketChannel.isConnected()){
+                currentStatus = ClientStatus.RECEIVING_LENGTH;
+            }else{
+                return true;
+            }
+        }
+
         //handle disconnects
         if(!socketChannel.isConnected()){
             return false;
@@ -88,9 +99,13 @@ public final class ConnectedClient{
                 }
 
                 //setup new message
-                if(!sendQueue.isEmpty()){
+                if(sendQueue.isEmpty()){
+                    break;
+                }else{
                     sendBuffer.clear();
-                    sendBuffer.put(sendQueue.pop());
+                    byte[] nextMessage = sendQueue.pop();
+                    sendBuffer.putInt(nextMessage.length);
+                    sendBuffer.put(nextMessage);
                     sendBuffer.flip();
                 }
             }
@@ -119,6 +134,7 @@ public final class ConnectedClient{
     }
 
     private enum ClientStatus{
+        CONNECTING,
         RECEIVING_LENGTH,
         RECEIVING_MESSAGE
     }
