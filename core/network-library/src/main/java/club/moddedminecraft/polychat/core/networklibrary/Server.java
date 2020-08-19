@@ -98,7 +98,8 @@ public final class Server{
 
     /**
      * Gets a list of currently-connected clients. You may call sendMessage() on individual clients, and you may do
-     * <code>==</code>< comparison to compare if two clients match (e.g. to pair messages with clients). Note that
+     * <code>==</code> comparison to compare if two client instances match (e.g. to pair messages with clients). Note
+     * that
      * <code>==</code> comparisons are not guaranteed to work after a client disconnects and reconnects for any reason,
      * including transient network errors.
      *
