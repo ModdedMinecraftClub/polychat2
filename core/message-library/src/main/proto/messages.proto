@@ -36,3 +36,8 @@ message CommandResult {
     string commandOutput = 4;
     string colour = 5;
 }
+
+message PromoteMember {
+    string serverId = 1;
+    string username = 2;
+}
