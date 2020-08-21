@@ -2,14 +2,29 @@ plugins {
     id 'java-library'
 }
 
+version = '2.0.0'
+group = 'club.moddedminecraft.polychat.bukkit1710' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'polychat-bukkit1710'
+
 repositories {
     jcenter()
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    mavenCentral()
+}
+
+configurations {
+    embed
+    compile.extendsFrom(embed)
 }
 
 dependencies {
     compileOnly files('./bukkit-1.4.7.jar')
-    compile files('../core/message-library/build/libs/message-library.jar')
-    compile files('../core/network-library/build/libs/network-library.jar')
+    embed files('../../core/message-library/build/libs/message-library.jar')
+    embed files('../../core/network-library/build/libs/network-library.jar')
+    embed "com.google.protobuf:protobuf-java:3.13.0"
+}
+
+jar {
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }

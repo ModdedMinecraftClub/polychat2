@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "polychat",
+  "name": "Polychat",
+  "description": "Forge 1.12.2 implementation of the Polychat client",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://github.com/moddedminecraftclub/polychat2",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["132ikl"],
+  "credits": "john01dav and Trace for the Polychat core libraries and server",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
