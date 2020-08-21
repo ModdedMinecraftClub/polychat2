@@ -1,25 +1,38 @@
 syntax = "proto3";
 
-package polychat2;
+package polychat;
 
 option java_package = "club.moddedminecraft.polychat.core.messagelibrary";
 
-message Message {
-    oneof innerMessage {
-        RegularMessage regularMessage = 1;
-        Command command = 2;
-    }
+message ServerInfo {
+    string serverId = 1;
+    string serverName = 2;
+    string serverAddress = 3;
+    int32 maxPlayers = 4;
+}
 
-    message RegularMessage {
-        int32 serverId = 1;
-        int64 messageTime = 2;
-        string messageAuthor = 3;
-        string messageContent = 4;
-    }
+message PlayersOnline {
+    string serverId = 1;
+    int32 playersOnline = 2;
+}
 
-    message Command {
-        string discordCommandName = 1;
-        string defaultCommand = 2;
-        string args = 3;
-    }
+message ChatMessage {
+    string serverId = 1;
+    int64 messageTime = 2;
+    string messageAuthor = 3;
+    string messageContent = 4;
+}
+
+message Command {
+    string discordCommandName = 1;
+    string defaultCommand = 2;
+    string args = 3;
+}
+
+message CommandResult {
+    string serverId = 1;
+    int64 discordChannelId = 2;
+    string command = 3;
+    string commandOutput = 4;
+    string colour = 5;
 }
