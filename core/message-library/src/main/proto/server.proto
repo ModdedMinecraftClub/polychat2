@@ -32,7 +32,7 @@ message ServerPlayersOnline {
 message ServerPlayerStatusChangedEvent {
     PlayerStatus newPlayerStatus = 1;
     string playerUsername = 2;
-    PlayersOnline newPlayersOnline = 3;
+    ServerPlayersOnline newPlayersOnline = 3;
 
     enum PlayerStatus {
         UNKNOWN = 0;
