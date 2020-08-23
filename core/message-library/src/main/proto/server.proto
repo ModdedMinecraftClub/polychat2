@@ -31,10 +31,9 @@ message ServerPlayersOnline {
 }
 
 message ServerPlayerStatusChangedEvent {
-    string serverId = 1;
-    PlayerStatus newPlayerStatus = 2;
-    string playerUsername = 3;
-    ServerPlayersOnline newPlayersOnline = 4;
+    PlayerStatus newPlayerStatus = 1;
+    string playerUsername = 2;
+    ServerPlayersOnline newPlayersOnline = 3;
 
     enum PlayerStatus {
         UNKNOWN = 0;
