@@ -1,31 +1,37 @@
 package club.moddedminecraft.polychat.core.server;
 
-import club.moddedminecraft.polychat.core.networklibrary.Message;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
-
-import java.io.IOException;
-import java.util.concurrent.ConcurrentLinkedDeque;
-
-import club.moddedminecraft.polychat.core.networklibrary.Server;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import club.moddedminecraft.polychat.core.networklibrary.Server;
+import club.moddedminecraft.polychat.core.networklibrary.Message;
+
 import javax.security.auth.login.LoginException;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 public final class PolychatServer {
     private final ConcurrentLinkedDeque<GenericEvent> queue;
     private final Server server;
     private final JDA jda;
+    private final HashMap<String, OnlineServer> onlineServers;
+    private final TextChannel generalChannel;
 
     public static final int TICK_TIME_IN_MILLIS = 50;
 
     private PolychatServer() throws IOException, LoginException {
         queue = new ConcurrentLinkedDeque<GenericEvent>();
         server = new Server(5005, 128);
-        jda = JDABuilder.createDefault("") // will need to be retrieved from YAML
+        onlineServers = new HashMap<>();
+        jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
                 .addEventListeners(new GenericEventHandler(queue))
                 .build();
+        generalChannel = jda.getTextChannelById(""); // same as above here;
     }
 
     public static void main(String[] args) {
@@ -54,7 +60,13 @@ public final class PolychatServer {
     private void spinOnce() {
         try {
             for (Message message : server.poll()) {
-
+                PolychatMessage polychatMessage = new PolychatMessage(
+                        jda,
+                        generalChannel,
+                        onlineServers,
+                        message
+                );
+                polychatMessage.handleMessage();
             }
 
             GenericEvent nextEvent;
@@ -64,6 +76,7 @@ public final class PolychatServer {
                     if (ev.getAuthor().isBot()) {
                         break;
                     }
+                    // TODO: Discord commands handling;
                 }
             }
         } catch (IOException e) {
