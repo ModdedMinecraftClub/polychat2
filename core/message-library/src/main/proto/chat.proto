@@ -7,7 +7,7 @@ option java_outer_classname = "ChatProtos";
 
 message ChatMessage {
     string serverId = 1;
-    int64 messageTime = 2;
-    string messageAuthor = 3;
+    string messageAuthor = 2;
+    string messageAuthorRank = 3;
     string messageContent = 4;
 }
