@@ -1,16 +1,18 @@
 [
-{
-  "modid": "polychat",
-  "name": "Polychat",
-  "description": "Forge 1.12.2 implementation of the Polychat client",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "https://github.com/moddedminecraftclub/polychat2",
-  "updateUrl": "",
-  "authorList": ["132ikl"],
-  "credits": "john01dav and Trace for the Polychat core libraries and server",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "polychat",
+    "name": "Polychat",
+    "description": "Forge 1.12.2 implementation of the Polychat client",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://github.com/moddedminecraftclub/polychat2",
+    "updateUrl": "",
+    "authorList": [
+      "132ikl"
+    ],
+    "credits": "john01dav and Trace for the Polychat core libraries and server",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]
