@@ -8,8 +8,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import club.moddedminecraft.polychat.core.networklibrary.Server;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 
