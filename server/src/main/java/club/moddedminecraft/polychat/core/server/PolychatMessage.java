@@ -56,6 +56,8 @@ public class PolychatMessage {
                 handleServerInfoMessage();
             } else if (packedProtoMessage.is(ServerProtos.ServerStatus.class)) {
                 handleServerStatusMessage();
+            } else {
+                logger.warn("Unrecognized message received.");
             }
 
         } catch (InvalidProtocolBufferException e) {
