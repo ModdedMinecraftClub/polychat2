@@ -141,7 +141,7 @@ public class PolychatMessage {
 
         if (server != null) {
             CommandProtos.GenericCommand command = CommandProtos.GenericCommand.newBuilder()
-                    .setDiscordChannelId(generalChannel.getIdLong())
+                    .setDiscordChannelId(generalChannel.getId())
                     .setDiscordCommandName("!promote")
                     .setDefaultCommand("/ranks add") // TODO: ask 132 if that's the right format;
                     .setArgs(msg.getUsername() + " member")
@@ -164,7 +164,13 @@ public class PolychatMessage {
                 .setColor(Color.BLUE) // TODO: ask 132 for format colour comes in;
                 .addField("Server", msg.getServerId(), false)
                 .addField("Command output", msg.getCommandOutput(), false);
-        jda.getTextChannelById(msg.getDiscordChannelId()).sendMessage(eb.build()).queue();
+        TextChannel channelCmdOriginatedFrom = jda.getTextChannelById(msg.getDiscordChannelId());
+
+        if (channelCmdOriginatedFrom != null) {
+            channelCmdOriginatedFrom.sendMessage(eb.build()).queue();
+        } else {
+            logger.error("Client told me a command was sent from a Discord channel that doesn't exist.");
+        }
     }
 
     private void handleChatMessage() throws InvalidProtocolBufferException {

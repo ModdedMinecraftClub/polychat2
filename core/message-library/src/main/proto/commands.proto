@@ -6,7 +6,7 @@ option java_package = "club.moddedminecraft.polychat.core.messagelibrary";
 option java_outer_classname = "CommandProtos";
 
 message GenericCommand {
-    int64 discordChannelId = 1;
+    string discordChannelId = 1;
     string discordCommandName = 2;
     string defaultCommand = 3;
     string args = 4;
@@ -14,7 +14,7 @@ message GenericCommand {
 
 message GenericCommandResult {
     string serverId = 1;
-    int64 discordChannelId = 2;
+    string discordChannelId = 2;
     string command = 3;
     string commandOutput = 4;
     string colour = 5;
