@@ -22,7 +22,8 @@ dependencies {
     compileOnly files('./bukkit-1.4.7.jar')
     embed files('../../core/message-library/build/libs/message-library.jar')
     embed files('../../core/network-library/build/libs/network-library.jar')
-    embed "com.google.protobuf:protobuf-java:3.13.0"
+    embed "com.google.protobuf:protobuf-java:3.13.+"
+    embed "org.yaml:snakeyaml:1.+"
 }
 
 jar {
