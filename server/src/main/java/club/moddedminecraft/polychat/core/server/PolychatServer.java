@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import club.moddedminecraft.polychat.core.networklibrary.Server;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 
@@ -24,20 +26,21 @@ public final class PolychatServer {
 
     public static final int TICK_TIME_IN_MILLIS = 50;
 
-    private PolychatServer() throws IOException, LoginException {
+    private PolychatServer() throws IOException, LoginException, InterruptedException {
         queue = new ConcurrentLinkedDeque<GenericEvent>();
         server = new Server(5005, 128);
         onlineServers = new HashMap<>();
         jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
                 .addEventListeners(new GenericEventHandler(queue))
-                .build();
+                .build()
+                .awaitReady();
         generalChannel = jda.getTextChannelById(""); // same as above here;
     }
 
     public static void main(String[] args) {
         try {
             new PolychatServer().spin();
-        } catch (IOException | LoginException e) {
+        } catch (IOException | LoginException | InterruptedException e) {
             e.printStackTrace();
         }
     }
