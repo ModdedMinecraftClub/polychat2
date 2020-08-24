@@ -7,6 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import org.yaml.snakeyaml.Yaml;
 
 @Mod(modid = Polychat.MODID, name = Polychat.NAME, version = Polychat.VERSION, serverSideOnly = true)
 public class Polychat {

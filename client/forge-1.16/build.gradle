@@ -1,35 +1,36 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
+        maven { url = "https://files.minecraftforge.net/maven" }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
     }
 }
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'java'
+apply plugin: "net.minecraftforge.gradle"
+apply plugin: "eclipse"
+apply plugin: "maven-publish"
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "java"
 
-version = '2.0.0'
-group = 'club.moddedminecraft.polychat.forge116' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'polychat-forge116'
+version = "2.0.0"
+group = "club.moddedminecraft.polychat.forge116" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "polychat-forge116"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200514-1.16'
+    mappings channel: "snapshot", version: "20200514-1.16"
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.2-33.0.7'
-    compile 'com.google.protobuf:protobuf-java:3.13.0'
-    compile files('../../core/message-library/build/libs/message-library.jar')
-    compile files('../../core/network-library/build/libs/network-library.jar')
+    minecraft "net.minecraftforge:forge:1.16.2-33.0.7"
+    compile files("../../core/message-library/build/libs/message-library.jar")
+    compile files("../../core/network-library/build/libs/network-library.jar")
+    compile "com.google.protobuf:protobuf-java:3.13.0"
+    compile "org.yaml:snakeyaml:1.+"
 }
 
 jar {
@@ -50,11 +51,13 @@ jar {
 shadowJar {
     classifier = ""
     dependencies {
-        include(dependency('com.google.protobuf:protobuf-java:3.13.0'))
-        include(dependency(files('../../core/message-library/build/libs/message-library.jar')))
-        include(dependency(files('../../core/network-library/build/libs/network-library.jar')))
+        include(dependency(files("../../core/message-library/build/libs/message-library.jar")))
+        include(dependency(files("../../core/network-library/build/libs/network-library.jar")))
+        include(dependency("com.google.protobuf:protobuf-java:3.13.0"))
+        include(dependency("org.yaml:snakeyaml:1.+"))
     }
-    relocate 'com.google.protobuf', 'club.moddedminecraft.polychat.repack.com.google.protobuf'
+    relocate "com.google.protobuf", "club.moddedminecraft.polychat.repack.com.google.protobuf"
+    relocate "com.yaml", "club.moddedminecraft.polychat.repack.com.yaml"
 }
 
 tasks.build.dependsOn shadowJar
@@ -63,4 +66,4 @@ artifacts {
     archives shadowJar
 }
 
-jar.finalizedBy('reobfJar')
+jar.finalizedBy("reobfJar")
