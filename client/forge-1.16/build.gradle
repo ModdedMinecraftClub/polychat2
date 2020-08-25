@@ -29,21 +29,22 @@ dependencies {
     minecraft "net.minecraftforge:forge:1.16.2-33.0.7"
     compile files("../../core/message-library/build/libs/message-library.jar")
     compile files("../../core/network-library/build/libs/network-library.jar")
+    compile files("../client-base/build/libs/client-base.jar")
     compile "com.google.protobuf:protobuf-java:3.13.0"
     compile "org.yaml:snakeyaml:1.+"
 }
 
 jar {
     manifest {
-        attributes([
-                "Specification-Title"     : "polychat",
-                "Specification-Vendor"    : "moddedminecraftclub",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${version}",
-                "Implementation-Vendor"   : "moddedminecraftclub",
+        attributes[
+                "Specification-Title": "polychat",
+                "Specification-Vendor": "moddedminecraftclub",
+                "Specification-Version": "1", // We are version 1 of ourselves
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor": "moddedminecraftclub",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
+        ]
     }
 
 }
