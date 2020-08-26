@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public final class PolychatServer {
     private final ConcurrentLinkedDeque<GenericEvent> queue;
     private final Server server;
+    private final PolychatMessageBus polychatMessageBus;
     private final JDA jda;
     private final HashMap<String, OnlineServer> onlineServers;
     private final TextChannel generalChannel;
@@ -27,12 +28,16 @@ public final class PolychatServer {
     private PolychatServer() throws IOException, LoginException, InterruptedException {
         queue = new ConcurrentLinkedDeque<GenericEvent>();
         server = new Server(5005, 128);
+        polychatMessageBus = new PolychatMessageBus();
+        polychatMessageBus.addEventHandler(new MainPolychatEventHandler());
         onlineServers = new HashMap<>();
-        jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
+        /*jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
                 .addEventListeners(new GenericEventHandler(queue))
                 .build()
                 .awaitReady();
-        generalChannel = jda.getTextChannelById(""); // same as above here;
+        generalChannel = jda.getTextChannelById(""); // same as above here;*/
+        jda = null;
+        generalChannel = null;
     }
 
     public static void main(String[] args) {
@@ -61,13 +66,7 @@ public final class PolychatServer {
     private void spinOnce() {
         try {
             for (Message message : server.poll()) {
-                PolychatMessage polychatMessage = new PolychatMessage(
-                        jda,
-                        generalChannel,
-                        onlineServers,
-                        message
-                );
-                polychatMessage.handleMessage();
+                polychatMessageBus.handlePolychatMessage(message);
             }
 
             GenericEvent nextEvent;
