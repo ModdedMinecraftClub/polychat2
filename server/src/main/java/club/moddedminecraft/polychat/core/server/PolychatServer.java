@@ -1,5 +1,6 @@
 package club.moddedminecraft.polychat.core.server;
 
+import club.moddedminecraft.polychat.core.server.handlers.GenericJdaEventHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -32,7 +33,7 @@ public final class PolychatServer {
         polychatMessageBus.addEventHandler(new MainPolychatEventHandler());
         onlineServers = new HashMap<>();
         jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
-                .addEventListeners(new GenericEventHandler(queue))
+                .addEventListeners(new GenericJdaEventHandler(queue))
                 .build()
                 .awaitReady();
         generalChannel = jda.getTextChannelById(""); // same as above here;

@@ -37,7 +37,7 @@ public final class PolychatMessageBus {
                         @SuppressWarnings("unchecked")
                         Class<? extends com.google.protobuf.Message> castedParameterType = (Class<? extends com.google.protobuf.Message>) parameterType; //this class is checked in isAcceptableEventHandler
                         if (packedProtoMessage.is(castedParameterType)) {
-                            method.invoke(handler, packedProtoMessage.unpack(castedParameterType));
+                            method.invoke(handler, packedProtoMessage.unpack(castedParameterType), message);
                         }
                     }
                 }
@@ -52,7 +52,11 @@ public final class PolychatMessageBus {
             return false;
         }
 
-        if (method.getParameterCount() != 1) {
+        if (method.getParameterCount() != 2) {
+            return false;
+        }
+
+        if(method.getParameters()[1].getType() != Message.class){
             return false;
         }
 

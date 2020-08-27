@@ -1,6 +1,7 @@
 package club.moddedminecraft.polychat.core.server.handlers;
 
 import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
+import club.moddedminecraft.polychat.core.networklibrary.Message;
 import club.moddedminecraft.polychat.core.server.EventHandler;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -12,7 +13,7 @@ public class ChatMessageHandler {
     }
 
     @EventHandler
-    public void handle(ChatProtos.ChatMessage msg) {
+    public void handle(ChatProtos.ChatMessage msg, Message message) {
         String discordMsg = "`"
                 + "[" + msg.getServerId() + "] "
                 + "[" + msg.getMessageAuthorRank() + "] "

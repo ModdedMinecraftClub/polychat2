@@ -1,6 +1,7 @@
 package club.moddedminecraft.polychat.core.server.handlers;
 
 import club.moddedminecraft.polychat.core.messagelibrary.CommandProtos;
+import club.moddedminecraft.polychat.core.networklibrary.Message;
 import club.moddedminecraft.polychat.core.server.EventHandler;
 import club.moddedminecraft.polychat.core.server.OnlineServer;
 import com.google.protobuf.Any;
@@ -20,7 +21,7 @@ public class PromoteMemberCommandHandler {
     }
 
     @EventHandler
-    public void handle(CommandProtos.PromoteMemberCommand msg) {
+    public void handle(CommandProtos.PromoteMemberCommand msg, Message message) {
         String serverId = msg.getServerId();
         OnlineServer server = onlineServers.get(serverId);
 
