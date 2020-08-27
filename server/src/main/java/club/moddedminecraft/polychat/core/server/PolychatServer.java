@@ -1,6 +1,9 @@
 package club.moddedminecraft.polychat.core.server;
 
+import club.moddedminecraft.polychat.core.server.handlers.ChatMessageHandler;
 import club.moddedminecraft.polychat.core.server.handlers.GenericJdaEventHandler;
+import club.moddedminecraft.polychat.core.server.handlers.PromoteMemberCommandHandler;
+import club.moddedminecraft.polychat.core.server.handlers.ServerInfoMessageHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -27,16 +30,27 @@ public final class PolychatServer {
     public static final int TICK_TIME_IN_MILLIS = 50;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
+        // set up JDA event queue & servers hashmap;
         queue = new ConcurrentLinkedDeque<GenericEvent>();
-        server = new Server(5005, 128);
-        polychatMessageBus = new PolychatMessageBus();
-        polychatMessageBus.addEventHandler(new MainPolychatEventHandler());
         onlineServers = new HashMap<>();
+
+        // set up JDA;
         jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
                 .addEventListeners(new GenericJdaEventHandler(queue))
                 .build()
                 .awaitReady();
         generalChannel = jda.getTextChannelById(""); // same as above here;
+
+        // set up TCP;
+        server = new Server(5005, 128);
+
+        // set up Protobuf message handlers;
+        polychatMessageBus = new PolychatMessageBus();
+        polychatMessageBus.addEventHandlers(
+                new ChatMessageHandler(generalChannel),
+                new PromoteMemberCommandHandler(generalChannel, onlineServers),
+                new ServerInfoMessageHandler(onlineServers)
+        );
     }
 
     public static void main(String[] args) {
