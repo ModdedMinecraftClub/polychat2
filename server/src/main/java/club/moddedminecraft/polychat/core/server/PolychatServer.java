@@ -31,13 +31,11 @@ public final class PolychatServer {
         polychatMessageBus = new PolychatMessageBus();
         polychatMessageBus.addEventHandler(new MainPolychatEventHandler());
         onlineServers = new HashMap<>();
-        /*jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
+        jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
                 .addEventListeners(new GenericEventHandler(queue))
                 .build()
                 .awaitReady();
-        generalChannel = jda.getTextChannelById(""); // same as above here;*/
-        jda = null;
-        generalChannel = null;
+        generalChannel = jda.getTextChannelById(""); // same as above here;
     }
 
     public static void main(String[] args) {
