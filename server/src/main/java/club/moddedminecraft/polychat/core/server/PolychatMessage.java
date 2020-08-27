@@ -38,33 +38,6 @@ public class PolychatMessage {
         this.author = message.getFrom();
     }
 
-    public void handleMessage() {
-        try {
-            packedProtoMessage = Any.parseFrom(message.getData());
-
-            if (packedProtoMessage.is(ChatProtos.ChatMessage.class)) {
-                handleChatMessage();
-            } else if (packedProtoMessage.is(ServerProtos.ServerPlayerStatusChangedEvent.class)) {
-                handlePlayerStatusChangedEventMessage();
-            } else if (packedProtoMessage.is(CommandProtos.GenericCommandResult.class)) {
-                handleGenericCommandResultMessage();
-            } else if (packedProtoMessage.is(ServerProtos.ServerPlayersOnline.class)) {
-                handlePlayersOnlineMessage();
-            } else if (packedProtoMessage.is(CommandProtos.PromoteMemberCommand.class)) {
-                handlePromoteMemberCommand();
-            } else if (packedProtoMessage.is(ServerProtos.ServerInfo.class)) {
-                handleServerInfoMessage();
-            } else if (packedProtoMessage.is(ServerProtos.ServerStatus.class)) {
-                handleServerStatusMessage();
-            } else {
-                logger.warn("Unrecognized message received.");
-            }
-
-        } catch (InvalidProtocolBufferException e) {
-            logger.error("Failed to parse/unpack message.", e);
-        }
-    }
-
     private void handleServerInfoMessage() throws InvalidProtocolBufferException {
         ServerProtos.ServerInfo msg = packedProtoMessage.unpack(ServerProtos.ServerInfo.class);
         // if new add to list;
@@ -136,29 +109,6 @@ public class PolychatMessage {
         }
     }
 
-    private void handlePromoteMemberCommand() throws InvalidProtocolBufferException {
-        CommandProtos.PromoteMemberCommand msg = packedProtoMessage.unpack(CommandProtos.PromoteMemberCommand.class);
-        String serverId = msg.getServerId();
-        OnlineServer server = onlineServers.get(serverId);
-
-        if (server != null) {
-            CommandProtos.GenericCommand command = CommandProtos.GenericCommand.newBuilder()
-                    .setDiscordChannelId(generalChannel.getId())
-                    .setDiscordCommandName("!promote")
-                    .setDefaultCommand("/ranks add") // TODO: ask 132 if that's the right format;
-                    .setArgs(msg.getUsername() + " member")
-                    .build();
-            Any any = Any.pack(command);
-            server.getClient().sendMessage(any.toByteArray());
-        } else {
-            EmbedBuilder eb = new EmbedBuilder()
-                    .setTitle("Error")
-                    .setDescription("Member bot requested promoting a member on a server that isn't online and/or doesn't exist")
-                    .setColor(Color.RED);
-            generalChannel.sendMessage(eb.build()).queue();
-        }
-    }
-
     private void handleGenericCommandResultMessage() throws InvalidProtocolBufferException {
         CommandProtos.GenericCommandResult msg = packedProtoMessage.unpack(CommandProtos.GenericCommandResult.class);
         EmbedBuilder eb = new EmbedBuilder()
@@ -173,16 +123,5 @@ public class PolychatMessage {
         } else {
             logger.error("Client told me a command was sent from a Discord channel that doesn't exist.");
         }
-    }
-
-    private void handleChatMessage() throws InvalidProtocolBufferException {
-        ChatProtos.ChatMessage msg = packedProtoMessage.unpack(ChatProtos.ChatMessage.class);
-        String discordMsg = "`"
-                + "[" + msg.getServerId() + "] "
-                + "[" + msg.getMessageAuthorRank() + "] "
-                + msg.getMessageAuthor() + ": "
-                + "`"
-                + msg.getMessageContent();
-        generalChannel.sendMessage(discordMsg).queue();
     }
 }
