@@ -1,5 +1,6 @@
 package club.moddedminecraft.polychat.core.server;
 
+import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
 
 import com.google.protobuf.Any;
@@ -7,11 +8,11 @@ import com.google.protobuf.Any;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public final class PolychatMessageBus {
     private final static Logger logger = LoggerFactory.getLogger(PolychatMessageBus.class);
@@ -19,6 +20,10 @@ public final class PolychatMessageBus {
 
     public void addEventHandler(Object eventHandler) {
         eventHandlers.add(eventHandler);
+    }
+
+    public void addEventHandlers(Object... eventHandlers) {
+        this.eventHandlers.addAll(Arrays.asList(eventHandlers));
     }
 
     public void removeEventHandler(Object eventHandler) {
@@ -37,7 +42,7 @@ public final class PolychatMessageBus {
                         @SuppressWarnings("unchecked")
                         Class<? extends com.google.protobuf.Message> castedParameterType = (Class<? extends com.google.protobuf.Message>) parameterType; //this class is checked in isAcceptableEventHandler
                         if (packedProtoMessage.is(castedParameterType)) {
-                            method.invoke(handler, packedProtoMessage.unpack(castedParameterType), message);
+                            method.invoke(handler, packedProtoMessage.unpack(castedParameterType), message.getFrom());
                         }
                     }
                 }
@@ -56,7 +61,7 @@ public final class PolychatMessageBus {
             return false;
         }
 
-        if(method.getParameters()[1].getType() != Message.class){
+        if(method.getParameters()[1].getType() != ConnectedClient.class){
             return false;
         }
 
