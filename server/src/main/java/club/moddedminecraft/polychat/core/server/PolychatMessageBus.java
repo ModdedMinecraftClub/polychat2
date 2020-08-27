@@ -7,11 +7,11 @@ import com.google.protobuf.Any;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public final class PolychatMessageBus {
     private final static Logger logger = LoggerFactory.getLogger(PolychatMessageBus.class);
@@ -19,10 +19,6 @@ public final class PolychatMessageBus {
 
     public void addEventHandler(Object eventHandler) {
         eventHandlers.add(eventHandler);
-    }
-
-    public void addEventHandlers(Object... eventHandlers) {
-        this.eventHandlers.addAll(Arrays.asList(eventHandlers));
     }
 
     public void removeEventHandler(Object eventHandler) {
@@ -64,7 +60,6 @@ public final class PolychatMessageBus {
             return false;
         }
 
-        //noinspection RedundantIfStatement
         if (method.getAnnotation(EventHandler.class) == null) {
             return false;
         }

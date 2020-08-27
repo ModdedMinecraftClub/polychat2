@@ -1,6 +1,5 @@
 package club.moddedminecraft.polychat.core.server;
 
-import club.moddedminecraft.polychat.core.server.handlers.PromoteMemberCommandHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -9,8 +8,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import club.moddedminecraft.polychat.core.networklibrary.Server;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
-import club.moddedminecraft.polychat.core.server.handlers.ChatMessageHandler;
-import club.moddedminecraft.polychat.core.server.handlers.GenericJdaEventHandler;
 
 import javax.security.auth.login.LoginException;
 
@@ -29,24 +26,16 @@ public final class PolychatServer {
     public static final int TICK_TIME_IN_MILLIS = 50;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
-        // set up jda;
         queue = new ConcurrentLinkedDeque<GenericEvent>();
+        server = new Server(5005, 128);
+        polychatMessageBus = new PolychatMessageBus();
+        polychatMessageBus.addEventHandler(new MainPolychatEventHandler());
         onlineServers = new HashMap<>();
         jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
-                .addEventListeners(new GenericJdaEventHandler(queue))
+                .addEventListeners(new GenericEventHandler(queue))
                 .build()
                 .awaitReady();
         generalChannel = jda.getTextChannelById(""); // same as above here;
-
-        // set up TCP server;
-        server = new Server(5005, 2048);
-
-        // set up protobuf message handlers;
-        polychatMessageBus = new PolychatMessageBus();
-        polychatMessageBus.addEventHandlers(
-                new ChatMessageHandler(generalChannel),
-                new PromoteMemberCommandHandler(generalChannel, onlineServers)
-        );
     }
 
     public static void main(String[] args) {
@@ -58,7 +47,6 @@ public final class PolychatServer {
     }
 
     private void spin() {
-        //noinspection InfiniteLoopStatement
         while (true) {
             long start = System.currentTimeMillis();
             spinOnce();
@@ -66,7 +54,6 @@ public final class PolychatServer {
             long sleepFor = TICK_TIME_IN_MILLIS - elapsed;
             if (sleepFor > 0) {
                 try {
-                    //noinspection BusyWait
                     Thread.sleep(sleepFor);
                 } catch (InterruptedException ignored) {
                 }

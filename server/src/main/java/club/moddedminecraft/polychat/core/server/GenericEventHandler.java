@@ -1,14 +1,14 @@
-package club.moddedminecraft.polychat.core.server;
+package club.moddedminecraft.polychat.core.server.handlers;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class GenericEventHandler implements EventListener {
+public class GenericJdaEventHandler implements EventListener {
     private final ConcurrentLinkedDeque<GenericEvent> queue;
 
-    public GenericEventHandler(ConcurrentLinkedDeque<GenericEvent> queue) {
+    public GenericJdaEventHandler(ConcurrentLinkedDeque<GenericEvent> queue) {
         this.queue = queue;
     }
 
