@@ -17,7 +17,6 @@ import javax.security.auth.login.LoginException;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public final class PolychatServer {
@@ -48,7 +47,7 @@ public final class PolychatServer {
         // set up Protobuf message handlers;
         polychatMessageBus = new PolychatMessageBus();
         polychatMessageBus.addEventHandlers(
-                new ChatMessageHandler(generalChannel),
+                new ChatMessageHandler(generalChannel, onlineServers),
                 new PromoteMemberCommandHandler(generalChannel, onlineServers),
                 new ServerInfoMessageHandler(onlineServers),
                 new ServerStatusMessageHandler(onlineServers),
