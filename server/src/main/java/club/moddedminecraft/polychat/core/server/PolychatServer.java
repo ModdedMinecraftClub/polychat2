@@ -1,6 +1,9 @@
 package club.moddedminecraft.polychat.core.server;
 
+import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
+import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 import club.moddedminecraft.polychat.core.server.handlers.*;
+import com.google.protobuf.Any;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -14,6 +17,7 @@ import javax.security.auth.login.LoginException;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public final class PolychatServer {
@@ -87,10 +91,35 @@ public final class PolychatServer {
             while ((nextEvent = queue.poll()) != null) {
                 if (nextEvent instanceof MessageReceivedEvent) {
                     MessageReceivedEvent ev = (MessageReceivedEvent)nextEvent;
+                    net.dv8tion.jda.api.entities.Message discordMsg = ev.getMessage();
+                    // ignore messages from self and other bots;
                     if (ev.getAuthor().isBot()) {
                         break;
                     }
-                    // TODO: Discord commands handling;
+
+                    // ignore commands in this event handler;
+                    if (discordMsg.getContentRaw().startsWith("!")) {
+                        break;
+                    }
+
+                    // construct Protobuf chat message from Discord message;
+                    ChatProtos.ChatMessage protoChatMessage = ChatProtos.ChatMessage.newBuilder()
+                            .setServerId("Discord")
+                            .setMessageAuthor(discordMsg.getAuthor().getName())
+                            .setMessageContent(discordMsg.getContentRaw())
+                            .build();
+
+                    // pack the message;
+                    Any packedMsg = Any.pack(protoChatMessage);
+
+                    // convert the message to bytes;
+                    byte[] msgBytes = packedMsg.toByteArray();
+
+                    // send the message to MC clients;
+                    for (OnlineServer server : onlineServers.values()) {
+                        ConnectedClient client = server.getClient();
+                        client.sendMessage(msgBytes);
+                    }
                 }
             }
         } catch (IOException e) {
