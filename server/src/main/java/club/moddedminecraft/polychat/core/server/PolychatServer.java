@@ -1,9 +1,6 @@
 package club.moddedminecraft.polychat.core.server;
 
-import club.moddedminecraft.polychat.core.server.handlers.ChatMessageHandler;
-import club.moddedminecraft.polychat.core.server.handlers.GenericJdaEventHandler;
-import club.moddedminecraft.polychat.core.server.handlers.PromoteMemberCommandHandler;
-import club.moddedminecraft.polychat.core.server.handlers.ServerInfoMessageHandler;
+import club.moddedminecraft.polychat.core.server.handlers.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -49,7 +46,11 @@ public final class PolychatServer {
         polychatMessageBus.addEventHandlers(
                 new ChatMessageHandler(generalChannel),
                 new PromoteMemberCommandHandler(generalChannel, onlineServers),
-                new ServerInfoMessageHandler(onlineServers)
+                new ServerInfoMessageHandler(onlineServers),
+                new ServerStatusMessageHandler(onlineServers),
+                new PlayersOnlineMessageHandler(onlineServers),
+                new PlayerStatusChangedMessageHandler(onlineServers, generalChannel),
+                new GenericCommandResultMessageHandler(jda)
         );
     }
 
