@@ -1,8 +1,8 @@
 package club.moddedminecraft.polychat.core.server.handlers;
 
+import club.moddedminecraft.polychat.core.messagelibrary.EventHandler;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
-import club.moddedminecraft.polychat.core.server.EventHandler;
 import club.moddedminecraft.polychat.core.server.OnlineServer;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.slf4j.Logger;

@@ -5,4 +5,5 @@ plugins {
 dependencies {
     compile files('../../core/message-library/build/libs/message-library.jar')
     compile files('../../core/network-library/build/libs/network-library.jar')
+    compile "com.google.protobuf:protobuf-java:3.13.0"
 }

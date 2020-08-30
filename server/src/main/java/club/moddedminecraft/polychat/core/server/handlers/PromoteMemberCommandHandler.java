@@ -1,14 +1,14 @@
 package club.moddedminecraft.polychat.core.server.handlers;
 
 import club.moddedminecraft.polychat.core.messagelibrary.CommandProtos;
+import club.moddedminecraft.polychat.core.messagelibrary.EventHandler;
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
-import club.moddedminecraft.polychat.core.server.EventHandler;
 import club.moddedminecraft.polychat.core.server.OnlineServer;
 import com.google.protobuf.Any;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.HashMap;
 
 public class PromoteMemberCommandHandler {

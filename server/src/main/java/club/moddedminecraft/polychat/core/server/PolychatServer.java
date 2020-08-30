@@ -1,6 +1,7 @@
 package club.moddedminecraft.polychat.core.server;
 
 import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
+import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 import club.moddedminecraft.polychat.core.server.handlers.*;
 import com.google.protobuf.Any;
@@ -22,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public final class PolychatServer {
     private final ConcurrentLinkedDeque<GenericEvent> queue;
     private final Server server;
-    private final PolychatMessageBus polychatMessageBus;
+    private final PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher;
     private final JDA jda;
     private final HashMap<String, OnlineServer> onlineServers;
     private final TextChannel generalChannel;
@@ -45,8 +46,8 @@ public final class PolychatServer {
         server = new Server(5005, 128);
 
         // set up Protobuf message handlers;
-        polychatMessageBus = new PolychatMessageBus();
-        polychatMessageBus.addEventHandlers(
+        polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
+        polychatProtobufMessageDispatcher.addEventHandlers(
                 new ChatMessageHandler(generalChannel, onlineServers),
                 new PromoteMemberCommandHandler(generalChannel, onlineServers),
                 new ServerInfoMessageHandler(onlineServers),
@@ -83,7 +84,7 @@ public final class PolychatServer {
     private void spinOnce() {
         try {
             for (Message message : server.poll()) {
-                polychatMessageBus.handlePolychatMessage(message);
+                polychatProtobufMessageDispatcher.handlePolychatMessage(message);
             }
 
             GenericEvent nextEvent;
