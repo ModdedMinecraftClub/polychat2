@@ -16,11 +16,9 @@ public class ServerInfoMessageHandler {
 
     @EventHandler
     public void handle(ServerProtos.ServerInfo msg, ConnectedClient author) {
-        // if new add to list;
-        OnlineServer server = onlineServers.get(msg.getServerId());
-        if (server == null) {
-            OnlineServer newServer = new OnlineServer(msg, author);
-            onlineServers.put(msg.getServerId(), newServer);
-        }
+        // if old then replace with new server
+        onlineServers.remove(msg.getServerId());
+        OnlineServer newServer = new OnlineServer(msg, author);
+        onlineServers.put(msg.getServerId(), newServer);
     }
 }

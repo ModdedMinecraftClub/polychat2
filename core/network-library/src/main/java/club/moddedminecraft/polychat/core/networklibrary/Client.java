@@ -18,6 +18,7 @@ public final class Client{
     private final String ip;
     private final int port;
     private final int bufferSize;
+    private final ArrayList<byte[]> reconnectMessageSet = new ArrayList<>();
     private ConnectedClient client = null;
 
     /**
@@ -84,7 +85,14 @@ public final class Client{
         if(currentTime - lastReconnectionAttempt >= RECONNECTION_INTERVAL){
             lastReconnectionAttempt = currentTime;
             client = new ConnectedClient(SocketChannel.open(new InetSocketAddress(ip, port)), bufferSize);
+            for(byte[] message : reconnectMessageSet){
+                client.sendMessage(message);
+            }
         }
+    }
+
+    public ArrayList<byte[]> getReconnectMessageSet(){
+        return reconnectMessageSet;
     }
 
 }

@@ -40,12 +40,12 @@ public class Polychat {
     @EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
         forge1122Client = new Forge1122Client(event.getServer());
-        client = new PolychatClient(forge1122Client, "localhost", 5005, 128, "e", "112");
-        System.out.println("Starting server...");
+        client = new PolychatClient(forge1122Client, "localhost", 5005, 32768, 14, "Forge");
     }
 
     @SubscribeEvent
     public void recieveChatMessage(ServerChatEvent event) {
-        client.newChatMessage(event.getMessage(), event.getUsername());
+        client.newChatMessage(event.getComponent().getUnformattedText(), event.getUsername());
+        // TODO; interrupt event and add prefix
     }
 }

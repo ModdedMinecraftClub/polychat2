@@ -6,6 +6,7 @@ import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessage
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import club.moddedminecraft.polychat.core.networklibrary.Client;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
+import com.google.protobuf.Any;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class PolychatClient {
     private final PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher;
 
     // temporary fields
-    private final String color;
+    private final int color;
     private final String serverId;
 
     /**
@@ -32,23 +33,28 @@ public class PolychatClient {
      *                   the central server, but it is not required as long as all messages are less than or equal to
      *                   both the buffer sizes minus 4 in length.
      */
-    public PolychatClient(ClientBase clientImpl, String serverIp, int serverPort, int bufferSize, String color, String serverId) {
+    public PolychatClient(ClientBase clientImpl, String serverIp, int serverPort, int bufferSize, int color, String serverId) {
         client = new Client(serverIp, serverPort, bufferSize);
         clientBase = clientImpl;
         polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
         polychatProtobufMessageDispatcher.addEventHandler(new ChatMessageHandler(clientBase));
 
+        // TODO: get from config
+        this.color = color;
+        this.serverId = serverId;
+
+        setupInfoMessage();
+    }
+
+    private void setupInfoMessage() {
         ServerProtos.ServerInfo info = ServerProtos.ServerInfo.newBuilder()
                 .setServerId(serverId)
-                .setServerName("test client")
+                .setServerName("test client") // TODO: get from config
                 .setServerAddress("test address")
                 .setMaxPlayers(clientBase.getMaxPlayers())
                 .build();
-        sendMessage(info);
-
-        // temporary
-        this.color = color;
-        this.serverId = serverId;
+        Any packed = Any.pack(info);
+        client.getReconnectMessageSet().add(packed.toByteArray());
     }
 
     /**
@@ -63,7 +69,6 @@ public class PolychatClient {
         }
 
         for (Message message : messages) {
-            System.out.println(message);
             polychatProtobufMessageDispatcher.handlePolychatMessage(message);
         }
     }
@@ -74,7 +79,8 @@ public class PolychatClient {
      * @param message the protobuf message to be sent
      */
     public void sendMessage(com.google.protobuf.Message message) {
-        byte[] messageBytes = message.toByteArray();
+        Any packedMessage = Any.pack(message);
+        byte[] messageBytes = packedMessage.toByteArray();
         try {
             client.sendMessage(messageBytes);
         } catch (IOException e) {
@@ -90,20 +96,20 @@ public class PolychatClient {
      * @param author  the author of the message
      */
     public void newChatMessage(String message, String author) {
-        String id = "§" + color + serverId;
         String rank;
         String content;
+        System.out.println(message);
         try {
             rank = message.substring(0, message.indexOf(author) - 1);
+            rank = rank.substring(1, rank.length()-1); // remove brackets (temporary)
             content = message.substring(message.indexOf(":") + 2);
         } catch (StringIndexOutOfBoundsException e) {
-            System.err.println("Failed to process message, salvaging chat message as best as possible...");
-            rank = "test";
+            System.err.println("Failed to process chat message, salvaging as best as possible...");
+            rank = "";
             content = message;
-            author = "test";
         }
         ChatProtos.ChatMessage chatMessage = ChatProtos.ChatMessage.newBuilder()
-                .setServerId(id)
+                .setServerId(serverId)
                 .setMessageAuthorRank(rank)
                 .setMessageAuthor(author)
                 .setMessageContent(content)
