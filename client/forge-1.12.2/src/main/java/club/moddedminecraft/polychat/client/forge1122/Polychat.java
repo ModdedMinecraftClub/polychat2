@@ -45,7 +45,7 @@ public class Polychat {
 
     @SubscribeEvent
     public void recieveChatMessage(ServerChatEvent event) {
-        client.newChatMessage(event.getComponent().getUnformattedText(), event.getUsername());
+        client.newChatMessage(event.getComponent().getFormattedText(), event.getMessage());
         // TODO; interrupt event and add prefix
     }
 }

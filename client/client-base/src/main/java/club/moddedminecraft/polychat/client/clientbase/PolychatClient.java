@@ -91,28 +91,16 @@ public class PolychatClient {
     /**
      * This method should be called each time a new chat message is recieved in game.
      *
-     * @param message The raw chat message, including formatting. Should be in the following format:
-     *                [Rank] Username: Message
-     * @param author  the author of the message
+     * @param message the raw chat message, including formatting
+     * @param message the message, formatting insensitive (no author, rank, etc)
      */
-    public void newChatMessage(String message, String author) {
-        String rank;
-        String content;
-        System.out.println(message);
-        try {
-            rank = message.substring(0, message.indexOf(author) - 1);
-            rank = rank.substring(1, rank.length()-1); // remove brackets (temporary)
-            content = message.substring(message.indexOf(":") + 2);
-        } catch (StringIndexOutOfBoundsException e) {
-            System.err.println("Failed to process chat message, salvaging as best as possible...");
-            rank = "";
-            content = message;
-        }
+    public void newChatMessage(String content, String message) {
+        String rawContent = content.replaceAll("§.", "");
+        String rawMessage = message.replaceAll("§.", "");
         ChatProtos.ChatMessage chatMessage = ChatProtos.ChatMessage.newBuilder()
                 .setServerId(serverId)
-                .setMessageAuthorRank(rank)
-                .setMessageAuthor(author)
-                .setMessageContent(content)
+                .setMessage(content)
+                .setMessageOffset(rawContent.lastIndexOf(rawMessage))
                 .build();
         sendMessage(chatMessage);
     }

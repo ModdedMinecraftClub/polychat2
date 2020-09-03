@@ -15,13 +15,10 @@ public class ChatMessageHandler {
 
     @EventHandler
     public void handle(ChatProtos.ChatMessage chatMessage, ConnectedClient author) {
-        StringBuilder message = new StringBuilder();
-        message.append("[").append(chatMessage.getServerId()).append("] "); // [ID]
-        if (!chatMessage.getMessageAuthorRank().isEmpty()) {
-            message.append("[").append(chatMessage.getMessageAuthorRank()).append("] "); // [RANK]
-        }
-        message.append(chatMessage.getMessageAuthor()).append(": "); // author:
-        message.append(chatMessage.getMessageContent());
-        clientBase.sendChatMessage(message.toString());
+        String message = "["
+                + chatMessage.getServerId()
+                + "] "
+                + chatMessage.getMessage();
+        clientBase.sendChatMessage(message);
     }
 }
