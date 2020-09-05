@@ -67,6 +67,7 @@ public class PolychatClient {
             messages = client.poll();
         } catch (IOException e) {
             System.err.println("Failed to reconnect to Polychat server");
+            e.printStackTrace();
         }
 
         for (Message message : messages) {
@@ -86,6 +87,7 @@ public class PolychatClient {
             client.sendMessage(messageBytes);
         } catch (IOException e) {
             System.err.println("Failed to send message!");
+            e.printStackTrace();
         }
     }
 
