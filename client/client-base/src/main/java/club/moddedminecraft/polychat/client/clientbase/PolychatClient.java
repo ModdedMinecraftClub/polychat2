@@ -17,6 +17,7 @@ public class PolychatClient {
     private final ClientBase clientBase;
     private final Client client;
     private final PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher;
+    private boolean cleanShutdown = false;
 
     // temporary fields
     private final int color;
@@ -43,10 +44,10 @@ public class PolychatClient {
         this.color = color;
         this.serverId = serverId;
 
-        setupInfoMessage();
+        startupMessages();
     }
 
-    private void setupInfoMessage() {
+    private void startupMessages() {
         ServerProtos.ServerInfo info = ServerProtos.ServerInfo.newBuilder()
                 .setServerId(serverId)
                 .setServerName("test client") // TODO: get from config
@@ -111,6 +112,37 @@ public class PolychatClient {
      */
     public String getServerId() {
         return String.format("§%01x", color) + "[" + serverId + "]" + "§r";
+    }
+
+    /**
+     * Send server startup message
+     */
+    public void sendServerStart() {
+        ServerProtos.ServerStatus statusMessage = ServerProtos.ServerStatus.newBuilder()
+                .setServerId(serverId)
+                .setStatus(ServerProtos.ServerStatus.ServerStatusEnum.STARTED)
+                .build();
+        sendMessage(statusMessage);
+        update();
+    }
+
+    /**
+     * Send server shutdown or crash message
+     */
+    public void sendServerStop() {
+        ServerProtos.ServerStatus statusMessage = ServerProtos.ServerStatus.newBuilder()
+                .setServerId(serverId)
+                .setStatus(cleanShutdown ? ServerProtos.ServerStatus.ServerStatusEnum.STOPPED : ServerProtos.ServerStatus.ServerStatusEnum.CRASHED)
+                .build();
+        sendMessage(statusMessage);
+        update();
+    }
+
+    /**
+     * Mark server as cleanly shutting down (rather than crashed)
+     */
+    public void cleanShutdown() {
+        cleanShutdown = true;
     }
 
 }

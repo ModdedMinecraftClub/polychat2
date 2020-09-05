@@ -1,12 +1,16 @@
 package club.moddedminecraft.polychat.client.forge1122;
 
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
+import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.NetworkCheckHandler;
@@ -25,6 +29,7 @@ public class Polychat {
 
     public Polychat() {
         MinecraftForge.EVENT_BUS.register(this);
+        Runtime.getRuntime().addShutdownHook(new Thread(this::sendShutdown));
     }
 
     //Forces the server to allow clients to join without the mod installed on their client
@@ -42,6 +47,20 @@ public class Polychat {
     public void onServerStarting(FMLServerStartingEvent event) {
         forge1122Client = new Forge1122Client(event.getServer());
         client = new PolychatClient(forge1122Client, "localhost", 5005, 32768, 14, "Twelve");
+    }
+
+    @EventHandler
+    public void onServerStarted(FMLServerStartedEvent event) {
+        client.sendServerStart();
+    }
+
+    @EventHandler
+    public void onServerStopping(FMLServerStoppingEvent event) {
+        client.cleanShutdown();
+    }
+
+    public void sendShutdown() {
+        client.sendServerStop();
     }
 
     @SubscribeEvent
