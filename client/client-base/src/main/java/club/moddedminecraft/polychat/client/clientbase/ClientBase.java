@@ -1,7 +1,5 @@
 package club.moddedminecraft.polychat.client.clientbase;
 
-import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
-
 import java.util.ArrayList;
 
 public interface ClientBase {

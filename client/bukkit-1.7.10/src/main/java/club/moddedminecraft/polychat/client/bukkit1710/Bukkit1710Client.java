@@ -5,7 +5,6 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Bukkit1710Client implements ClientBase {
 

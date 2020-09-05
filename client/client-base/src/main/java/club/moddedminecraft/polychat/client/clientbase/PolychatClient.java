@@ -18,12 +18,10 @@ public class PolychatClient {
     private final Client client;
     private final PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher;
     private final OnlinePlayerThread playerThread;
-
-    private boolean cleanShutdown = false;
-
     // temporary fields
     private final int color;
     private final String serverId;
+    private boolean cleanShutdown = false;
 
     /**
      * Connects to a server with the given IP, port, and buffer size.
@@ -114,6 +112,7 @@ public class PolychatClient {
 
     /**
      * Gets the formatted server ID ex. [A5]
+     *
      * @return formatted server id
      */
     public String getServerId() {

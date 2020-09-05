@@ -2,10 +2,9 @@ package club.moddedminecraft.polychat.client.clientbase;
 
 public class OnlinePlayerThread {
 
+    private static final long SLEEP_TIME_SECONDS = 5 * 60;
     private final PolychatClient client;
     private final Thread thread;
-
-    private static final long SLEEP_TIME_SECONDS = 5 * 60;
 
     public OnlinePlayerThread(PolychatClient client) {
         this.client = client;
