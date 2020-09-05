@@ -6,6 +6,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class Forge1122Client implements ClientBase {
 
     private final MinecraftServer server;
@@ -27,5 +30,13 @@ public class Forge1122Client implements ClientBase {
     public int getMaxPlayers() {
         return server.getMaxPlayers();
     }
+
+    @Override
+    public ArrayList<String> getOnlinePlayers() {
+        ArrayList<String> players = new ArrayList<>();
+        Collections.addAll(players, server.getPlayerList().getOnlinePlayerNames());
+        return players;
+    }
+
 
 }

@@ -6,6 +6,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
 
 public class Forge116Client implements ClientBase {
@@ -28,6 +30,13 @@ public class Forge116Client implements ClientBase {
     @Override
     public int getMaxPlayers() {
         return server.getMaxPlayers();
+    }
+
+    @Override
+    public ArrayList<String> getOnlinePlayers() {
+        ArrayList<String> players = new ArrayList<>();
+        Collections.addAll(players, server.getPlayerList().getOnlinePlayerNames());
+        return players;
     }
 
 }

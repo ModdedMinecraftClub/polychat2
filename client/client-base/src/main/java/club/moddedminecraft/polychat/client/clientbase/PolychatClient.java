@@ -17,6 +17,8 @@ public class PolychatClient {
     private final ClientBase clientBase;
     private final Client client;
     private final PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher;
+    private final OnlinePlayerThread playerThread;
+
     private boolean cleanShutdown = false;
 
     // temporary fields
@@ -38,13 +40,15 @@ public class PolychatClient {
         client = new Client(serverIp, serverPort, bufferSize);
         clientBase = clientImpl;
         polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
-        polychatProtobufMessageDispatcher.addEventHandler(new ChatMessageHandler(clientBase));
+        playerThread = new OnlinePlayerThread(this);
 
         // TODO: get from config
         this.color = color;
         this.serverId = serverId;
 
+        polychatProtobufMessageDispatcher.addEventHandler(new ChatMessageHandler(clientBase));
         startupMessages();
+        playerThread.start();
     }
 
     private void startupMessages() {
@@ -145,6 +149,33 @@ public class PolychatClient {
      */
     public void cleanShutdown() {
         cleanShutdown = true;
+    }
+
+
+    private ServerProtos.ServerPlayersOnline getPlayersOnline() {
+        ArrayList<String> playersOnline = clientBase.getOnlinePlayers();
+        ServerProtos.ServerPlayersOnline message = ServerProtos.ServerPlayersOnline.newBuilder()
+                .setServerId(serverId)
+                .setPlayersOnline(playersOnline.size())
+                .addAllPlayerNames(playersOnline)
+                .build();
+        return message;
+    }
+
+    /**
+     * Send the currently online players to the server
+     */
+    public void sendPlayers() {
+        sendMessage(getPlayersOnline());
+    }
+
+    public void playerEvent(String username, ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus status) {
+        ServerProtos.ServerPlayerStatusChangedEvent message = ServerProtos.ServerPlayerStatusChangedEvent.newBuilder()
+                .setNewPlayerStatus(status)
+                .setNewPlayersOnline(getPlayersOnline())
+                .setPlayerUsername(username)
+                .build();
+        sendMessage(message);
     }
 
 }

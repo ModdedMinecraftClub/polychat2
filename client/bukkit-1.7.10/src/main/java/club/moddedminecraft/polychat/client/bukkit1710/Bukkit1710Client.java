@@ -2,6 +2,10 @@ package club.moddedminecraft.polychat.client.bukkit1710;
 
 import club.moddedminecraft.polychat.client.clientbase.ClientBase;
 import org.bukkit.Server;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Bukkit1710Client implements ClientBase {
 
@@ -19,5 +23,15 @@ public class Bukkit1710Client implements ClientBase {
     @Override
     public int getMaxPlayers() {
         return server.getMaxPlayers();
+    }
+
+    @Override
+    public ArrayList<String> getOnlinePlayers() {
+        ArrayList<String> players = new ArrayList<>();
+        Player[] bukkitPlayers = server.getOnlinePlayers();
+        for (Player player : bukkitPlayers) {
+            players.add(player.getName());
+        }
+        return players;
     }
 }

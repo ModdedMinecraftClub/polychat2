@@ -1,10 +1,13 @@
 package club.moddedminecraft.polychat.client.bukkit1710;
 
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
+import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Polychat extends JavaPlugin implements Listener {
@@ -44,6 +47,16 @@ public class Polychat extends JavaPlugin implements Listener {
 
         String fullMessage = String.format(event.getFormat(), event.getPlayer().getName(), event.getMessage());
         client.newChatMessage(fullMessage, event.getMessage());
+    }
+
+    @EventHandler
+    public void onJoin(PlayerLoginEvent event) {
+        client.playerEvent(event.getPlayer().getName(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        client.playerEvent(event.getPlayer().getName(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
     }
 
 }

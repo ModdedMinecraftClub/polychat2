@@ -1,10 +1,12 @@
 package club.moddedminecraft.polychat.forge116;
 
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
+import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -52,6 +54,16 @@ public class Polychat {
         String withPrefix = client.getServerId() + " " + event.getComponent().getString();
         event.setComponent(new StringTextComponent(withPrefix));
         client.newChatMessage(withPrefix, event.getMessage());
+    }
+
+    @SubscribeEvent
+    public void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        client.playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
+    }
+
+    @SubscribeEvent
+    public void onLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+        client.playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
     }
 
 }

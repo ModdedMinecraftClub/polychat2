@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -68,5 +69,15 @@ public class Polychat {
         String withPrefix = client.getServerId() + " " + event.getComponent().getFormattedText();
         event.setComponent(new TextComponentString(withPrefix));
         client.newChatMessage(withPrefix, event.getMessage());
+    }
+
+    @SubscribeEvent
+    public void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        client.playerEvent(event.player.getName(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
+    }
+
+    @SubscribeEvent
+    public void onLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+        client.playerEvent(event.player.getName(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
     }
 }
