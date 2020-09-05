@@ -22,11 +22,11 @@ archivesBaseName = "polychat-forge116"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: "snapshot", version: "20200514-1.16"
+    mappings channel: 'snapshot', version: '20200514-1.16'
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.16.2-33.0.7"
+    minecraft 'net.minecraftforge:forge:1.16.2-33.0.32'
     compile files("../../core/message-library/build/libs/message-library.jar")
     compile files("../../core/network-library/build/libs/network-library.jar")
     compile files("../client-base/build/libs/client-base.jar")
@@ -67,4 +67,4 @@ artifacts {
     archives shadowJar
 }
 
-jar.finalizedBy("reobfJar")
+shadowJar.finalizedBy("reobfJar")

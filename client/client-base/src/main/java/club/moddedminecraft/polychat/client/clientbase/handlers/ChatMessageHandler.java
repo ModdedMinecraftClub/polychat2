@@ -15,10 +15,6 @@ public class ChatMessageHandler {
 
     @EventHandler
     public void handle(ChatProtos.ChatMessage chatMessage, ConnectedClient author) {
-        String message = "["
-                + chatMessage.getServerId()
-                + "] "
-                + chatMessage.getMessage();
-        clientBase.sendChatMessage(message);
+        clientBase.sendChatMessage(chatMessage.getMessage());
     }
 }

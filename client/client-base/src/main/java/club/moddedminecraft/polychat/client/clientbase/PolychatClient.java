@@ -105,4 +105,12 @@ public class PolychatClient {
         sendMessage(chatMessage);
     }
 
+    /**
+     * Gets the formatted server ID ex. [A5]
+     * @return formatted server id
+     */
+    public String getServerId() {
+        return String.format("§%01x", color) + "[" + serverId + "]" + "§r";
+    }
+
 }

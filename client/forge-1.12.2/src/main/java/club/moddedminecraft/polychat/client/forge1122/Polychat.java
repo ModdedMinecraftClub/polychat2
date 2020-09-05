@@ -1,6 +1,7 @@
 package club.moddedminecraft.polychat.client.forge1122;
 
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,12 +41,13 @@ public class Polychat {
     @EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
         forge1122Client = new Forge1122Client(event.getServer());
-        client = new PolychatClient(forge1122Client, "localhost", 5005, 32768, 14, "Forge");
+        client = new PolychatClient(forge1122Client, "localhost", 5005, 32768, 14, "Twelve");
     }
 
     @SubscribeEvent
     public void recieveChatMessage(ServerChatEvent event) {
-        client.newChatMessage(event.getComponent().getFormattedText(), event.getMessage());
-        // TODO; interrupt event and add prefix
+        String withPrefix = client.getServerId() + " " + event.getComponent().getFormattedText();
+        event.setComponent(new TextComponentString(withPrefix));
+        client.newChatMessage(withPrefix, event.getMessage());
     }
 }
