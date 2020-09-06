@@ -1,6 +1,7 @@
 package club.moddedminecraft.polychat.client.clientbase;
 
 import club.moddedminecraft.polychat.client.clientbase.handlers.ChatMessageHandler;
+import club.moddedminecraft.polychat.client.clientbase.util.YamlConfig;
 import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
@@ -9,6 +10,7 @@ import club.moddedminecraft.polychat.core.networklibrary.Message;
 import com.google.protobuf.Any;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,42 +20,84 @@ public class PolychatClient {
     private final Client client;
     private final PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher;
     private final OnlinePlayerThread playerThread;
-    // temporary fields
-    private final int color;
+    private final YamlConfig config;
     private final String serverId;
+
     private boolean cleanShutdown = false;
 
     /**
-     * Connects to a server with the given IP, port, and buffer size.
+     * Connects to the Polychat server based on config values
      *
      * @param clientImpl the implementation of the client protocol
-     * @param serverIp   the server IP to connect to
-     * @param serverPort the server port to connect to
-     * @param bufferSize The buffer size. The maximum message that can be sent is is this buffer size minus 4 bytes. It
-     *                   is recommended, but not required, that the buffer size is the same on both the client(s) and
-     *                   the central server, but it is not required as long as all messages are less than or equal to
-     *                   both the buffer sizes minus 4 in length.
      */
-    public PolychatClient(ClientBase clientImpl, String serverIp, int serverPort, int bufferSize, int color, String serverId) {
-        client = new Client(serverIp, serverPort, bufferSize);
+    public PolychatClient(ClientBase clientImpl) {
         clientBase = clientImpl;
+        config = getConfig();
+        client = new Client(
+                config.getOrDefault("poly_address", "localhost"),
+                config.getOrDefault("poly_port", 5005),
+                config.getOrDefault("poly_buffersize", 32768)
+        );
         polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
         playerThread = new OnlinePlayerThread(this);
-
-        // TODO: get from config
-        this.color = color;
-        this.serverId = serverId;
+        serverId = config.getOrDefault("serverId", "ID");
 
         polychatProtobufMessageDispatcher.addEventHandler(new ChatMessageHandler(clientBase));
-        startupMessages();
+        setupInfoMessage();
         playerThread.start();
     }
 
-    private void startupMessages() {
+    /**
+     * Gets config for client
+     *
+     * @return client config
+     */
+    private YamlConfig getConfig() {
+        try {
+            Path directory = clientBase.getConfigDirectory();
+            Path configPath = directory.resolve("polychat.yml");
+            directory.toFile().mkdir();
+
+            if (configPath.toFile().createNewFile()) {
+                return getDefaultConfig(configPath);
+            }
+
+            return YamlConfig.fromFilesystem(configPath);
+        } catch (IOException e) {
+            System.err.println("Failed to load config!");
+            e.printStackTrace();
+        }
+        return YamlConfig.fromInMemoryString("");
+    }
+
+    /**
+     * Sets up a default config
+     *
+     * @param path path for new config
+     * @return default config
+     * @throws IOException if unable to save file
+     */
+    private YamlConfig getDefaultConfig(Path path) throws IOException {
+        YamlConfig def = YamlConfig.fromInMemoryString("");
+        def.set("name", "A Minecraft Server");
+        def.set("address", "example.com");
+        def.set("color", 14);
+        def.set("serverId", "ID");
+        def.set("poly_address", "localhost");
+        def.set("poly_port", 5005);
+        def.set("poly_buffersize", 32768);
+        def.saveToFile(path);
+        return def;
+    }
+
+    /**
+     * Prepares server info message for (re)connects
+     */
+    private void setupInfoMessage() {
         ServerProtos.ServerInfo info = ServerProtos.ServerInfo.newBuilder()
                 .setServerId(serverId)
-                .setServerName("test client") // TODO: get from config
-                .setServerAddress("test address")
+                .setServerName(config.getOrDefault("name", "DEFAULT_NAME"))
+                .setServerAddress(config.getOrDefault("address", "DEFAULT_ADDRESS"))
                 .setMaxPlayers(clientBase.getMaxPlayers())
                 .build();
         Any packed = Any.pack(info);
@@ -96,7 +140,7 @@ public class PolychatClient {
     /**
      * This method should be called each time a new chat message is recieved in game.
      *
-     * @param message the raw chat message, including formatting
+     * @param content the raw chat message, including formatting
      * @param message the message, formatting insensitive (no author, rank, etc)
      */
     public void newChatMessage(String content, String message) {
@@ -116,6 +160,7 @@ public class PolychatClient {
      * @return formatted server id
      */
     public String getServerId() {
+        int color = config.getOrDefault("color", 14);
         return String.format("§%01x", color) + "[" + serverId + "]" + "§r";
     }
 
@@ -150,15 +195,18 @@ public class PolychatClient {
         cleanShutdown = true;
     }
 
-
+    /**
+     * Prepares a message containing the current players online
+     *
+     * @return list of online players
+     */
     private ServerProtos.ServerPlayersOnline getPlayersOnline() {
         ArrayList<String> playersOnline = clientBase.getOnlinePlayers();
-        ServerProtos.ServerPlayersOnline message = ServerProtos.ServerPlayersOnline.newBuilder()
+        return ServerProtos.ServerPlayersOnline.newBuilder()
                 .setServerId(serverId)
                 .setPlayersOnline(playersOnline.size())
                 .addAllPlayerNames(playersOnline)
                 .build();
-        return message;
     }
 
     /**
@@ -168,6 +216,12 @@ public class PolychatClient {
         sendMessage(getPlayersOnline());
     }
 
+    /**
+     * Should be called when a player joins or leaves
+     *
+     * @param username username of player who has joined or left
+     * @param status   whether the player has joined or left
+     */
     public void playerEvent(String username, ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus status) {
         ServerProtos.ServerPlayerStatusChangedEvent message = ServerProtos.ServerPlayerStatusChangedEvent.newBuilder()
                 .setNewPlayerStatus(status)

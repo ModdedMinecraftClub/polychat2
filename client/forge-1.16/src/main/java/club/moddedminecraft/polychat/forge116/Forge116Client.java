@@ -5,7 +5,10 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.ForgeConfig;
+import net.minecraftforge.fml.loading.FMLPaths;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
@@ -37,6 +40,11 @@ public class Forge116Client implements ClientBase {
         ArrayList<String> players = new ArrayList<>();
         Collections.addAll(players, server.getPlayerList().getOnlinePlayerNames());
         return players;
+    }
+
+    @Override
+    public Path getConfigDirectory() {
+        return FMLPaths.CONFIGDIR.get();
     }
 
 }

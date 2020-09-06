@@ -24,7 +24,6 @@ public class Polychat {
     public static final String NAME = "Forge 1.12.2 implementation of the Polychat client";
     public static final String VERSION = "2.0.0";
 
-    private Forge1122Client forge1122Client;
     private PolychatClient client;
 
     public Polychat() {
@@ -45,8 +44,7 @@ public class Polychat {
 
     @EventHandler
     public void onServerStarting(FMLServerStartingEvent event) {
-        forge1122Client = new Forge1122Client(event.getServer());
-        client = new PolychatClient(forge1122Client, "localhost", 5005, 32768, 14, "Twelve");
+        client = new PolychatClient(new Forge1122Client(event.getServer()));
     }
 
     @EventHandler

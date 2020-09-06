@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Polychat extends JavaPlugin implements Listener {
-    private Bukkit1710Client bukkit1710Client;
     private PolychatClient client;
 
     @Override
@@ -18,8 +17,7 @@ public class Polychat extends JavaPlugin implements Listener {
         Runtime.getRuntime().addShutdownHook(new Thread(this::sendShutdown));
         getServer().getScheduler().runTaskTimer(this, this::onTick, 0, 1);
 
-        bukkit1710Client = new Bukkit1710Client(getServer());
-        client = new PolychatClient(bukkit1710Client, "localhost", 5005, 32768, 8, "Bukkit");
+        client = new PolychatClient(new Bukkit1710Client(this));
 
         getServer().getPluginManager().registerEvents(this, this);
 
@@ -51,6 +49,7 @@ public class Polychat extends JavaPlugin implements Listener {
     @EventHandler
     public void onJoin(PlayerLoginEvent event) {
         client.playerEvent(event.getPlayer().getName(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
+        getDataFolder();
     }
 
     @EventHandler

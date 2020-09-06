@@ -14,7 +14,6 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 
 @Mod("polychat")
 public class Polychat {
-    private Forge116Client forge116Client;
     private PolychatClient client;
 
     public Polychat() {
@@ -31,8 +30,7 @@ public class Polychat {
 
     @SubscribeEvent
     public void onServerStarting(FMLServerStartedEvent event) {
-        forge116Client = new Forge116Client(event.getServer());
-        client = new PolychatClient(forge116Client, "localhost", 5005, 32768, 4, "Sixteen");
+        client = new PolychatClient(new Forge116Client(event.getServer()));
     }
 
     @SubscribeEvent
