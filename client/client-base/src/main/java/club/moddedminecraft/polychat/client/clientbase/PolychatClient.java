@@ -2,7 +2,6 @@ package club.moddedminecraft.polychat.client.clientbase;
 
 import club.moddedminecraft.polychat.client.clientbase.handlers.ChatMessageHandler;
 import club.moddedminecraft.polychat.client.clientbase.util.YamlConfig;
-import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import club.moddedminecraft.polychat.core.networklibrary.Client;
@@ -16,33 +15,33 @@ import java.util.List;
 
 public class PolychatClient {
 
-    private final ClientBase clientBase;
+    private final ClientApiBase clientApi;
     private final Client client;
     private final PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher;
-    private final OnlinePlayerThread playerThread;
     private final YamlConfig config;
     private final String serverId;
-
-    private boolean cleanShutdown = false;
+    private final ClientCallbacks clientCallbacks;
+    private long lastUpdate = 0;
 
     /**
      * Connects to the Polychat server based on config values
      *
      * @param clientImpl the implementation of the client protocol
      */
-    public PolychatClient(ClientBase clientImpl) {
-        clientBase = clientImpl;
+    public PolychatClient(ClientApiBase clientImpl) {
+        clientCallbacks = new ClientCallbacks(this);
+        clientApi = clientImpl;
         config = getConfig();
         client = new Client(
-                config.getOrDefault("poly_address", "localhost"),
-                config.getOrDefault("poly_port", 5005),
-                config.getOrDefault("poly_buffersize", 32768)
+                config.getOrDefault("server.address", "localhost"),
+                config.getOrDefault("server.port", 5005),
+                config.getOrDefault("server.buffersize", 32768)
         );
         polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
-        playerThread = new OnlinePlayerThread(this);
+        OnlinePlayerThread playerThread = new OnlinePlayerThread(this);
         serverId = config.getOrDefault("serverId", "ID");
 
-        polychatProtobufMessageDispatcher.addEventHandler(new ChatMessageHandler(clientBase));
+        polychatProtobufMessageDispatcher.addEventHandler(new ChatMessageHandler(clientApi));
         setupInfoMessage();
         playerThread.start();
     }
@@ -54,7 +53,7 @@ public class PolychatClient {
      */
     private YamlConfig getConfig() {
         try {
-            Path directory = clientBase.getConfigDirectory();
+            Path directory = clientApi.getConfigDirectory();
             Path configPath = directory.resolve("polychat.yml");
             directory.toFile().mkdir();
 
@@ -83,9 +82,8 @@ public class PolychatClient {
         def.set("address", "example.com");
         def.set("color", 14);
         def.set("serverId", "ID");
-        def.set("poly_address", "localhost");
-        def.set("poly_port", 5005);
-        def.set("poly_buffersize", 32768);
+        def.set("server.address", "localhost");
+        def.set("server.port", 5005);
         def.saveToFile(path);
         return def;
     }
@@ -98,7 +96,7 @@ public class PolychatClient {
                 .setServerId(serverId)
                 .setServerName(config.getOrDefault("name", "DEFAULT_NAME"))
                 .setServerAddress(config.getOrDefault("address", "DEFAULT_ADDRESS"))
-                .setMaxPlayers(clientBase.getMaxPlayers())
+                .setMaxPlayers(clientApi.getMaxPlayers())
                 .build();
         Any packed = Any.pack(info);
         client.getReconnectMessageSet().add(packed.toByteArray());
@@ -108,17 +106,23 @@ public class PolychatClient {
      * This method should be called at a consistent interval in order to process messages from the server.
      */
     public void update() {
+        // only run every 250 ms
+        if (lastUpdate + 250 > System.currentTimeMillis()) {
+            return;
+        }
+
         List<Message> messages = new ArrayList<>();
         try {
             messages = client.poll();
         } catch (IOException e) {
             System.err.println("Failed to reconnect to Polychat server");
-            e.printStackTrace();
         }
 
         for (Message message : messages) {
             polychatProtobufMessageDispatcher.handlePolychatMessage(message);
         }
+
+        lastUpdate = System.currentTimeMillis();
     }
 
     /**
@@ -138,97 +142,38 @@ public class PolychatClient {
     }
 
     /**
-     * This method should be called each time a new chat message is recieved in game.
-     *
-     * @param content the raw chat message, including formatting
-     * @param message the message, formatting insensitive (no author, rank, etc)
-     */
-    public void newChatMessage(String content, String message) {
-        String rawContent = content.replaceAll("§.", "");
-        String rawMessage = message.replaceAll("§.", "");
-        ChatProtos.ChatMessage chatMessage = ChatProtos.ChatMessage.newBuilder()
-                .setServerId(serverId)
-                .setMessage(content)
-                .setMessageOffset(rawContent.lastIndexOf(rawMessage))
-                .build();
-        sendMessage(chatMessage);
-    }
-
-    /**
-     * Gets the formatted server ID ex. [A5]
+     * Gets the formatted server ID with colors ex. §4[A5]
      *
      * @return formatted server id
      */
-    public String getServerId() {
+    public String getFormattedServerId() {
         int color = config.getOrDefault("color", 14);
         return String.format("§%01x", color) + "[" + serverId + "]" + "§r";
     }
 
     /**
-     * Send server startup message
-     */
-    public void sendServerStart() {
-        ServerProtos.ServerStatus statusMessage = ServerProtos.ServerStatus.newBuilder()
-                .setServerId(serverId)
-                .setStatus(ServerProtos.ServerStatus.ServerStatusEnum.STARTED)
-                .build();
-        sendMessage(statusMessage);
-        update();
-    }
-
-    /**
-     * Send server shutdown or crash message
-     */
-    public void sendServerStop() {
-        ServerProtos.ServerStatus statusMessage = ServerProtos.ServerStatus.newBuilder()
-                .setServerId(serverId)
-                .setStatus(cleanShutdown ? ServerProtos.ServerStatus.ServerStatusEnum.STOPPED : ServerProtos.ServerStatus.ServerStatusEnum.CRASHED)
-                .build();
-        sendMessage(statusMessage);
-        update();
-    }
-
-    /**
-     * Mark server as cleanly shutting down (rather than crashed)
-     */
-    public void cleanShutdown() {
-        cleanShutdown = true;
-    }
-
-    /**
-     * Prepares a message containing the current players online
+     * Gets the formatted server ID ex. A5
      *
-     * @return list of online players
+     * @return server id
      */
-    private ServerProtos.ServerPlayersOnline getPlayersOnline() {
-        ArrayList<String> playersOnline = clientBase.getOnlinePlayers();
-        return ServerProtos.ServerPlayersOnline.newBuilder()
-                .setServerId(serverId)
-                .setPlayersOnline(playersOnline.size())
-                .addAllPlayerNames(playersOnline)
-                .build();
+    public String getServerId() {
+        return serverId;
     }
 
     /**
-     * Send the currently online players to the server
-     */
-    public void sendPlayers() {
-        sendMessage(getPlayersOnline());
-    }
-
-    /**
-     * Should be called when a player joins or leaves
+     * Gets the implementation of ClientApiBase
      *
-     * @param username username of player who has joined or left
-     * @param status   whether the player has joined or left
+     * @return the client API
      */
-    public void playerEvent(String username, ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus status) {
-        ServerProtos.ServerPlayerStatusChangedEvent message = ServerProtos.ServerPlayerStatusChangedEvent.newBuilder()
-                .setNewPlayerStatus(status)
-                .setNewPlayersOnline(getPlayersOnline())
-                .setPlayerUsername(username)
-                .build();
-        sendMessage(message);
+    public ClientApiBase getClientApi() {
+        return clientApi;
     }
 
+    /**
+     * Gets the instance of ClientCallbacks
+     * @return client callbacks
+     */
+    public ClientCallbacks getCallbacks() {
+        return clientCallbacks;
+    }
 }

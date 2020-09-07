@@ -3,7 +3,7 @@ package club.moddedminecraft.polychat.client.clientbase;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-public interface ClientBase {
+public interface ClientApiBase {
 
     void sendChatMessage(String message);
 

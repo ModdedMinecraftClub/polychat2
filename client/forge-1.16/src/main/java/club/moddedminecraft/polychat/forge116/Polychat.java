@@ -1,7 +1,11 @@
 package club.moddedminecraft.polychat.forge116;
 
+import club.moddedminecraft.polychat.client.clientbase.ClientApiBase;
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
@@ -11,10 +15,17 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.loading.FMLPaths;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.UUID;
 
 @Mod("polychat")
-public class Polychat {
+public class Polychat implements ClientApiBase {
     private PolychatClient client;
+    private MinecraftServer server;
 
     public Polychat() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -30,38 +41,66 @@ public class Polychat {
 
     @SubscribeEvent
     public void onServerStarting(FMLServerStartedEvent event) {
-        client = new PolychatClient(new Forge116Client(event.getServer()));
+        server = event.getServer();
+        client = new PolychatClient(this);
     }
 
     @SubscribeEvent
     public void onServerStarted(FMLServerStartedEvent event) {
-        client.sendServerStart();
+        client.getCallbacks().sendServerStart();
     }
 
     @SubscribeEvent
     public void onServerStopping(FMLServerStoppingEvent event) {
-        client.cleanShutdown();
+        client.getCallbacks().cleanShutdown();
     }
 
     public void sendShutdown() {
-        client.sendServerStop();
+        client.getCallbacks().sendServerStop();
     }
 
     @SubscribeEvent
-    public void recieveChatMessage(ServerChatEvent event) {
-        String withPrefix = client.getServerId() + " " + event.getComponent().getString();
+    public void receiveChatMessage(ServerChatEvent event) {
+        String withPrefix = client.getFormattedServerId() + " " + event.getComponent().getString();
         event.setComponent(new StringTextComponent(withPrefix));
-        client.newChatMessage(withPrefix, event.getMessage());
+        client.getCallbacks().newChatMessage(withPrefix, event.getMessage());
     }
 
     @SubscribeEvent
     public void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        client.playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
+        client.getCallbacks().playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
     }
 
     @SubscribeEvent
     public void onLeave(PlayerEvent.PlayerLoggedOutEvent event) {
-        client.playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
+        client.getCallbacks().playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
     }
 
+    @Override
+    public void sendChatMessage(String message) {
+        ITextComponent string = new StringTextComponent(message);
+        for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
+            player.sendMessage(string, player.getUniqueID());
+        }
+        server.sendMessage(string, UUID.randomUUID());
+    }
+
+    @Override
+    public int getMaxPlayers() {
+        return server.getMaxPlayers();
+    }
+
+    @Override
+    public ArrayList<String> getOnlinePlayers() {
+        ArrayList<String> players = new ArrayList<>();
+        String[] playerNames = server.getPlayerList().getOnlinePlayerNames();
+        players.ensureCapacity(playerNames.length);
+        Collections.addAll(players, playerNames);
+        return players;
+    }
+
+    @Override
+    public Path getConfigDirectory() {
+        return FMLPaths.CONFIGDIR.get();
+    }
 }

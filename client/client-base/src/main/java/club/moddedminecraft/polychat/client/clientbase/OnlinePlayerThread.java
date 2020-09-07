@@ -22,7 +22,7 @@ public class OnlinePlayerThread {
     private void run() {
         while (true) {
             try {
-                client.sendPlayers();
+                client.getCallbacks().sendPlayers();
                 Thread.sleep(SLEEP_TIME_SECONDS * 1000);
             } catch (InterruptedException ignored) {
             }
