@@ -16,8 +16,6 @@ buildscript {
 
 dependencies {
   compile 'com.google.protobuf:protobuf-java:3.0.0'
-  // Use JUnit test framework
-	testImplementation 'junit:junit:4.13'
 }
 
 protobuf {
