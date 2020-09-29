@@ -26,7 +26,8 @@ public final class PlayerStatusChangedMessageHandler {
         OnlineServer server = onlineServers.get(serverId);
 
         if (server != null) {
-            server.updatePlayersInfo(msg.getNewPlayersOnline());
+            server.setPlayersOnline(msg.getNewPlayersOnline().getPlayersOnline());
+            server.setOnlinePlayerNames(msg.getNewPlayersOnline().getPlayerNamesList());
             ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus playerStatus = msg.getNewPlayerStatus();
             String playerUsername = msg.getPlayerUsername();
             String discordMessage;
