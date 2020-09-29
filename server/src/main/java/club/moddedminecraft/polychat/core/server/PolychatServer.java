@@ -121,10 +121,7 @@ public final class PolychatServer {
                     byte[] msgBytes = packedMsg.toByteArray();
 
                     // send the message to MC clients;
-                    for (OnlineServer server : onlineServers.values()) {
-                        ConnectedClient client = server.getClient();
-                        client.sendMessage(msgBytes);
-                    }
+                    server.broadcastMessageToAll(msgBytes);
                 }
             }
         } catch (IOException e) {
