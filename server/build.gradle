@@ -1,25 +1,24 @@
-plugins{
-	id 'java'
-	id 'application'
+plugins {
+    id 'java'
+    id 'application'
 }
 
 mainClassName = 'club.moddedminecraft.polychat.core.server.PolychatServer'
 
-repositories{
-	mavenCentral()
-	jcenter()
+repositories {
+    mavenCentral()
+    jcenter()
 }
 
 dependencies {
-	implementation ('net.dv8tion:JDA:4.2.0_188') {
-		exclude module: 'opus-java'
-	}
+    implementation('net.dv8tion:JDA:4.2.0_188') {
+        exclude module: 'opus-java'
+    }
 
-	dependencies {
-		compile('ch.qos.logback:logback-classic:1.2.3')
-		compile 'com.google.protobuf:protobuf-java:3.0.0'
-		compile files('../core/message-library/build/libs/message-library.jar')
-	    compile files('../core/network-library/build/libs/network-library.jar')
-	}
-
+    dependencies {
+        compile('ch.qos.logback:logback-classic:1.2.3')
+        compile 'com.google.protobuf:protobuf-java:3.0.0'
+        compile files('../core/message-library/build/libs/message-library.jar')
+        compile files('../core/network-library/build/libs/network-library.jar')
+    }
 }
