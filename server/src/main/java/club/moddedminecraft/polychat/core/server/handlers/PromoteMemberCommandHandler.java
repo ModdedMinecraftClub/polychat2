@@ -28,8 +28,8 @@ public final class PromoteMemberCommandHandler {
         if (server != null) {
             CommandProtos.GenericCommand command = CommandProtos.GenericCommand.newBuilder()
                     .setDiscordChannelId(generalChannel.getId())
-                    .setDiscordCommandName("!promote")
-                    .setDefaultCommand("/ranks add") // TODO: ask 132 if that's the right format;
+                    .setDiscordCommandName("promote")
+                    .setDefaultCommand("ranks add")
                     .setArgs(msg.getUsername() + " member")
                     .build();
             Any any = Any.pack(command);
