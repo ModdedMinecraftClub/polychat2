@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.Color;
 import java.util.HashMap;
 
-public class PromoteMemberCommandHandler {
+public final class PromoteMemberCommandHandler {
     private final TextChannel generalChannel;
     private final HashMap<String, OnlineServer> onlineServers;
 

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-public class PlayerStatusChangedMessageHandler {
+public final class PlayerStatusChangedMessageHandler {
     private final static Logger logger = LoggerFactory.getLogger(ServerStatusMessageHandler.class);
     private final HashMap<String, OnlineServer> onlineServers;
     private final TextChannel generalChannel;

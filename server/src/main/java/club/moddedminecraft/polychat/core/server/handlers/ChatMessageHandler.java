@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChatMessageHandler {
+public final class ChatMessageHandler {
     private final TextChannel generalChannel;
     private final HashMap<String, OnlineServer> onlineServers;
 
