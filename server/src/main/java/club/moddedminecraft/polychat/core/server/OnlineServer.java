@@ -77,11 +77,6 @@ public final class OnlineServer {
         return client;
     }
 
-    public void updatePlayersInfo(ServerProtos.ServerPlayersOnline serverPlayersOnlineMessage) {
-        this.playersOnline = serverPlayersOnlineMessage.getPlayersOnline();
-        this.onlinePlayerNames = serverPlayersOnlineMessage.getPlayerNamesList();
-    }
-
     public String getServerChatMessage(String message) {
         return "`[" + serverId + "] " + message + "`";
     }

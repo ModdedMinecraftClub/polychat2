@@ -23,7 +23,8 @@ public final class PlayersOnlineMessageHandler {
         OnlineServer server = onlineServers.get(serverId);
 
         if (server != null) {
-            server.updatePlayersInfo(msg);
+            server.setPlayersOnline(msg.getPlayersOnline());
+            server.setOnlinePlayerNames(msg.getPlayerNamesList());
         } else {
             logger.error("Server with id \""
                     + serverId
