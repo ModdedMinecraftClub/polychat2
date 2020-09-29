@@ -82,7 +82,7 @@ public final class OnlineServer {
         this.onlinePlayerNames = serverPlayersOnlineMessage.getPlayerNamesList();
     }
 
-    public String createServerChatMessage(String message) {
+    public String getServerChatMessage(String message) {
         return "`[" + serverId + "] " + message + "`";
     }
 

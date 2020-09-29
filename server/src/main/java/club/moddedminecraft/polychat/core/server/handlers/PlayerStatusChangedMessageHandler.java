@@ -31,10 +31,10 @@ public final class PlayerStatusChangedMessageHandler {
             String playerUsername = msg.getPlayerUsername();
             String discordMessage;
             if (playerStatus == ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED) {
-                discordMessage = server.createServerChatMessage(playerUsername + " has joined the game");
+                discordMessage = server.getServerChatMessage(playerUsername + " has joined the game");
                 generalChannel.sendMessage(discordMessage).queue();
             } else if (playerStatus == ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT) {
-                discordMessage = server.createServerChatMessage(playerUsername + " has left the game");
+                discordMessage = server.getServerChatMessage(playerUsername + " has left the game");
                 generalChannel.sendMessage(discordMessage).queue();
             } else {
                 logger.error("Server with id \""
