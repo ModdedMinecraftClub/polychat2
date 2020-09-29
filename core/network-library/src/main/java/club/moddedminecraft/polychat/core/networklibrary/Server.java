@@ -90,7 +90,7 @@ public final class Server{
      *
      * @param message The message to send.
      */
-    public void broadcastMessage(byte[] message){
+    public void broadcastMessageToAll(byte[] message){
         for(ConnectedClient client : clients){
             client.sendMessage(message);
         }
