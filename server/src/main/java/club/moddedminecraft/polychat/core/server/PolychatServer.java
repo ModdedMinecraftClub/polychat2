@@ -1,17 +1,20 @@
 package club.moddedminecraft.polychat.core.server;
 
-import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
-import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
-import club.moddedminecraft.polychat.core.server.handlers.*;
 import com.google.protobuf.Any;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
+
 import club.moddedminecraft.polychat.core.networklibrary.Server;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
+import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
+
+import club.moddedminecraft.polychat.core.server.handlers.*;
 
 import javax.security.auth.login.LoginException;
 
