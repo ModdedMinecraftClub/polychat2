@@ -18,10 +18,6 @@ public final class PolychatMessageBus {
     private final static Logger logger = LoggerFactory.getLogger(PolychatMessageBus.class);
     private final ArrayList<Object> eventHandlers = new ArrayList<>();
 
-    public void addEventHandler(Object eventHandler) {
-        eventHandlers.add(eventHandler);
-    }
-
     public void addEventHandlers(Object... eventHandlers) {
         this.eventHandlers.addAll(Arrays.asList(eventHandlers));
     }
