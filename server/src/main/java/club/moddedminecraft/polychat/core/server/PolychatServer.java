@@ -15,6 +15,8 @@ import club.moddedminecraft.polychat.core.networklibrary.Message;
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 
 import club.moddedminecraft.polychat.core.server.handlers.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 
@@ -30,6 +32,7 @@ public final class PolychatServer {
     private final HashMap<String, OnlineServer> onlineServers;
     private final TextChannel generalChannel;
 
+    private final static Logger logger = LoggerFactory.getLogger(PolychatServer.class);
     public static final int TICK_TIME_IN_MILLIS = 50;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
@@ -64,7 +67,7 @@ public final class PolychatServer {
         try {
             new PolychatServer().spin();
         } catch (IOException | LoginException | InterruptedException e) {
-            e.printStackTrace();
+            logger.error("Error while starting Polychat server", e);
         }
     }
 
@@ -125,7 +128,7 @@ public final class PolychatServer {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error occurred in Polychat server event loop", e);
         }
     }
 }
