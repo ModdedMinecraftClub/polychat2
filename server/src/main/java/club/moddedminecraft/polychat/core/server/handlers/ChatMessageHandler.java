@@ -22,7 +22,7 @@ public final class ChatMessageHandler {
     @EventHandler
     public void handle(ChatProtos.ChatMessage msg, ConnectedClient author) {
         sendMessageToDiscord(msg);
-        sendMessageToOtherClients(msg);
+        sendMessageToOtherClients(msg, author);
     }
 
     private void sendMessageToDiscord(ChatProtos.ChatMessage msg) {
@@ -35,14 +35,12 @@ public final class ChatMessageHandler {
         generalChannel.sendMessage(discordMsg).queue();
     }
 
-    private void sendMessageToOtherClients(ChatProtos.ChatMessage msg) {
+    private void sendMessageToOtherClients(ChatProtos.ChatMessage msg, ConnectedClient author) {
         Any packedMsg = Any.pack(msg);
 
-        for (Map.Entry<String, OnlineServer> entry : onlineServers.entrySet()) {
-            String serverId = entry.getKey();
-            ConnectedClient client = entry.getValue().getClient();
-
-            if (!serverId.equals(msg.getServerId())) {
+        for (OnlineServer server : onlineServers.values()) {
+            ConnectedClient client = server.getClient();
+            if (client != author) {
                 client.sendMessage(packedMsg.toByteArray());
             }
         }
