@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 
 public final class PlayersOnlineMessageHandler {
-    private final static Logger logger = LoggerFactory.getLogger(ServerStatusMessageHandler.class);
+    private final static Logger logger = LoggerFactory.getLogger(PlayersOnlineMessageHandler.class);
     private final HashMap<String, OnlineServer> onlineServers;
 
     public PlayersOnlineMessageHandler(HashMap<String, OnlineServer> onlineServers) {
