@@ -6,7 +6,7 @@ import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OnlineServer {
+public final class OnlineServer {
     private String serverId;
     private String serverName;
     private String serverAddress;
