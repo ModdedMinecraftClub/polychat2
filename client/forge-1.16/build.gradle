@@ -26,7 +26,10 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.2-33.0.32'
+    // IMPORTANT NOTE WHEN UPGRADING FORGE VERSION:
+    // RUN THE jar COMMAND BEFORE FIRST BUILD AFTER UPGRADE
+    // OTHERWISE YOU WILL GET A BUNCH OF SCARY ERRORS
+    minecraft 'net.minecraftforge:forge:1.16.3-34.1.7'
     compile files("../../core/message-library/build/libs/message-library.jar")
     compile files("../../core/network-library/build/libs/network-library.jar")
     compile files("../client-base/build/libs/client-base.jar")
