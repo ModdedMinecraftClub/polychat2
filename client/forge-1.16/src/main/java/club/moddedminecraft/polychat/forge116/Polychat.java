@@ -3,11 +3,14 @@ package club.moddedminecraft.polychat.forge116;
 import club.moddedminecraft.polychat.client.clientbase.ClientApiBase;
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -20,6 +23,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Mod("polychat")
@@ -51,6 +55,23 @@ public class Polychat implements ClientApiBase {
     }
 
     @SubscribeEvent
+    public void commandRegister(RegisterCommandsEvent event) {
+        event.getDispatcher().register(Commands.literal("pcmute").executes(context -> {
+            CommandSource sender = context.getSource();
+            ServerPlayerEntity entity = sender.asPlayer();
+            UUID uuid = entity.getUniqueID();
+            if (client.getMuteStorage().checkPlayer(uuid)) {
+                client.getMuteStorage().removePlayer(uuid);
+                sender.sendFeedback(new StringTextComponent("§9Unmuted all other servers and Discord."), false);
+            } else {
+                client.getMuteStorage().addPlayer(uuid);
+                sender.sendFeedback(new StringTextComponent("§9Muted all other servers and Discord."), false);
+            }
+            return 0;
+        }));
+    }
+
+    @SubscribeEvent
     public void onServerStopping(FMLServerStoppingEvent event) {
         client.getCallbacks().cleanShutdown();
     }
@@ -76,10 +97,12 @@ public class Polychat implements ClientApiBase {
         client.getCallbacks().playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
     }
 
-    @Override
-    public void sendChatMessage(String message) {
+    public void sendChatMessage(String message, List<UUID> uuids) {
         ITextComponent string = new StringTextComponent(message);
         for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
+            if (uuids.contains(player.getUniqueID())) {
+                continue;
+            }
             player.sendMessage(string, player.getUniqueID());
         }
         server.sendMessage(string, UUID.randomUUID());

@@ -4,6 +4,7 @@ import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ClientCallbacks {
     private final PolychatClient client;
@@ -95,6 +96,19 @@ public class ClientCallbacks {
      */
     public void cleanShutdown() {
         cleanShutdown = true;
+    }
+
+    /**
+     * Denote player as muting or unmuting other servers
+     * @param player Player who muted/unmuted other servers
+     * @param mute If the player muted or unmuted
+     */
+    public void playerSetMute(UUID player, boolean mute) {
+        if (mute) {
+            client.getMuteStorage().addPlayer(player);
+        } else {
+            client.getMuteStorage().removePlayer(player);
+        }
     }
 
 

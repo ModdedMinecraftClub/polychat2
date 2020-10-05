@@ -1,3 +1,7 @@
 name: polychat
 main: club.moddedminecraft.polychat.client.bukkit1710.Polychat
 version: 2.0.0
+commands:
+  pcmute:
+    description: Mutes/unmutes other servers and Discord
+    usage: /pcmute

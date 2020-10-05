@@ -3,7 +3,10 @@ package club.moddedminecraft.polychat.client.bukkit1710;
 import club.moddedminecraft.polychat.client.clientbase.ClientApiBase;
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +17,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class Polychat extends JavaPlugin implements Listener, ClientApiBase {
     private PolychatClient client;
@@ -65,8 +70,30 @@ public class Polychat extends JavaPlugin implements Listener, ClientApiBase {
     }
 
     @Override
-    public void sendChatMessage(String message) {
-        server.broadcastMessage(message);
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (cmd.getName().equalsIgnoreCase("pcmute")) { // If the player typed /basic then do the following, note: If you only registered this executor for one command, you don't need this
+            Player player = Bukkit.getPlayer(sender.getName());
+            UUID uuid = player.getUniqueId();
+            if (client.getMuteStorage().checkPlayer(uuid)) {
+                client.getMuteStorage().removePlayer(uuid);
+                player.sendMessage("§9Unmuted all other servers and Discord.");
+            } else {
+                client.getMuteStorage().addPlayer(uuid);
+                player.sendMessage("§9Muted all other servers and Discord.");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void sendChatMessage(String message, List<UUID> uuids) {
+        for (Player player : server.getOnlinePlayers()) {
+            if (uuids.contains(player.getUniqueId())) {
+                continue;
+            }
+            player.sendMessage(message);
+        }
     }
 
     @Override
@@ -89,4 +116,5 @@ public class Polychat extends JavaPlugin implements Listener, ClientApiBase {
     public Path getConfigDirectory() {
         return getDataFolder().toPath();
     }
+
 }

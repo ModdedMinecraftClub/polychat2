@@ -22,9 +22,7 @@ import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 @Mod(modid = Polychat.MODID, name = Polychat.NAME, version = Polychat.VERSION)
 public class Polychat implements ClientApiBase {
@@ -57,6 +55,7 @@ public class Polychat implements ClientApiBase {
     public void onServerStarting(FMLServerStartingEvent event) {
         server = event.getServer();
         client = new PolychatClient(this);
+        event.registerServerCommand(new MuteCommand(client.getMuteStorage()));
     }
 
     @EventHandler
@@ -91,9 +90,12 @@ public class Polychat implements ClientApiBase {
     }
 
     @Override
-    public void sendChatMessage(String message) {
+    public void sendChatMessage(String message, List<UUID> uuids) {
         ITextComponent string = new TextComponentString(message);
         for (EntityPlayerMP player : server.getPlayerList().getPlayers()) {
+            if (uuids.contains(player.getUniqueID())) {
+                continue;
+            }
             player.sendMessage(string);
         }
         server.sendMessage(string);

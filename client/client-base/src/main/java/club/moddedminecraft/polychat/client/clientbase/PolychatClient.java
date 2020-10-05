@@ -1,6 +1,7 @@
 package club.moddedminecraft.polychat.client.clientbase;
 
 import club.moddedminecraft.polychat.client.clientbase.handlers.ChatMessageHandler;
+import club.moddedminecraft.polychat.client.clientbase.util.MuteStorage;
 import club.moddedminecraft.polychat.client.clientbase.util.YamlConfig;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
@@ -21,6 +22,7 @@ public class PolychatClient {
     private final YamlConfig config;
     private final String serverId;
     private final ClientCallbacks clientCallbacks;
+    private final MuteStorage muteStorage;
     private long lastUpdate = 0;
 
     /**
@@ -39,9 +41,10 @@ public class PolychatClient {
         );
         polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
         OnlinePlayerThread playerThread = new OnlinePlayerThread(this);
+        muteStorage = new MuteStorage(clientApi.getConfigDirectory());
         serverId = config.getOrDefault("serverId", "ID");
 
-        polychatProtobufMessageDispatcher.addEventHandler(new ChatMessageHandler(clientApi));
+        polychatProtobufMessageDispatcher.addEventHandler(new ChatMessageHandler(clientApi, muteStorage));
         setupInfoMessage();
         playerThread.start();
     }
@@ -171,9 +174,18 @@ public class PolychatClient {
 
     /**
      * Gets the instance of ClientCallbacks
+     *
      * @return client callbacks
      */
     public ClientCallbacks getCallbacks() {
         return clientCallbacks;
+    }
+
+    /**
+     * Gets the instanec of MuteStorage
+     * @return mute storage
+     */
+    public MuteStorage getMuteStorage() {
+        return muteStorage;
     }
 }
