@@ -1,0 +1,73 @@
+buildscript {
+    repositories {
+        maven { url = "https://files.minecraftforge.net/maven" }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.4"
+    }
+}
+apply plugin: "net.minecraftforge.gradle"
+apply plugin: "eclipse"
+apply plugin: "maven-publish"
+apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: "java"
+
+version = "2.0.0"
+group = "club.moddedminecraft.polychat.forge116" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "polychat-forge116"
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
+
+minecraft {
+    mappings channel: 'snapshot', version: '20200514-1.16'
+}
+
+dependencies {
+    // IMPORTANT NOTE WHEN UPGRADING FORGE VERSION:
+    // RUN THE jar COMMAND BEFORE FIRST BUILD AFTER UPGRADE
+    // OTHERWISE YOU WILL GET A BUNCH OF SCARY ERRORS
+    minecraft 'net.minecraftforge:forge:1.16.3-34.1.7'
+    compile files("../../core/message-library/build/libs/message-library.jar")
+    compile files("../../core/network-library/build/libs/network-library.jar")
+    compile files("../client-base/build/libs/client-base.jar")
+    compile "com.google.protobuf:protobuf-java:3.13.0"
+    compile "org.yaml:snakeyaml:1.+"
+}
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title"     : "polychat",
+                "Specification-Vendor"    : "moddedminecraftclub",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "moddedminecraftclub",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+
+}
+
+shadowJar {
+    classifier = ""
+    dependencies {
+        include(dependency(files("../../core/message-library/build/libs/message-library.jar")))
+        include(dependency(files("../../core/network-library/build/libs/network-library.jar")))
+        include(dependency("com.google.protobuf:protobuf-java:3.13.0"))
+        include(dependency("org.yaml:snakeyaml:1.+"))
+    }
+    relocate "com.google.protobuf", "club.moddedminecraft.polychat.repack.com.google.protobuf"
+    relocate "com.yaml", "club.moddedminecraft.polychat.repack.com.yaml"
+}
+
+tasks.build.dependsOn shadowJar
+
+artifacts {
+    archives shadowJar
+}
+
+shadowJar.finalizedBy("reobfJar")

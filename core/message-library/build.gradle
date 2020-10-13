@@ -16,6 +16,7 @@ buildscript {
 
 dependencies {
   compile 'com.google.protobuf:protobuf-java:3.0.0'
+  implementation project(":network-library")
 }
 
 protobuf {

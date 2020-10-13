@@ -13,7 +13,8 @@ message ServerInfo {
 }
 
 message ServerStatus {
-    ServerStatusEnum status = 1;
+    string serverId = 1;
+    ServerStatusEnum status = 2;
 
     enum ServerStatusEnum {
         UNKNOWN = 0;
