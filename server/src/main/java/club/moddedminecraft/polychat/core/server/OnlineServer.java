@@ -6,7 +6,7 @@ import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OnlineServer {
+public final class OnlineServer {
     private String serverId;
     private String serverName;
     private String serverAddress;
@@ -77,12 +77,7 @@ public class OnlineServer {
         return client;
     }
 
-    public void updatePlayersInfo(ServerProtos.ServerPlayersOnline serverPlayersOnlineMessage) {
-        this.playersOnline = serverPlayersOnlineMessage.getPlayersOnline();
-        this.onlinePlayerNames = serverPlayersOnlineMessage.getPlayerNamesList();
-    }
-
-    public String createServerChatMessage(String message) {
+    public String getServerChatMessage(String message) {
         return "`[" + serverId + "] " + message + "`";
     }
 

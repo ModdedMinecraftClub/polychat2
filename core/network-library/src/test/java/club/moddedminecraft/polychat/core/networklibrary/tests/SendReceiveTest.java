@@ -36,7 +36,7 @@ public class SendReceiveTest{
 
         //from server to client
         byte[] exampleByteArray2 = "This is another test string.".getBytes(StandardCharsets.UTF_8);
-        server.broadcastMessage(exampleByteArray2);
+        server.broadcastMessageToAll(exampleByteArray2);
         while((receivedMessages = client.poll()).size() < 1){
             server.poll();
             if(System.currentTimeMillis()-loopStart > 10000){

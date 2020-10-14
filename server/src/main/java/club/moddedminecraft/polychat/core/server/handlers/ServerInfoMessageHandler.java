@@ -7,7 +7,7 @@ import club.moddedminecraft.polychat.core.server.OnlineServer;
 
 import java.util.HashMap;
 
-public class ServerInfoMessageHandler {
+public final class ServerInfoMessageHandler {
     private final HashMap<String, OnlineServer> onlineServers;
 
     public ServerInfoMessageHandler(HashMap<String, OnlineServer> onlineServers) {

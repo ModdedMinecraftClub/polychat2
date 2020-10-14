@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 
-public class GenericCommandResultMessageHandler {
+public final class GenericCommandResultMessageHandler {
     private final static Logger logger = LoggerFactory.getLogger(ServerStatusMessageHandler.class);
     private final JDA jda;
 

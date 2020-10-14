@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-public class PlayerStatusChangedMessageHandler {
+public final class PlayerStatusChangedMessageHandler {
     private final static Logger logger = LoggerFactory.getLogger(ServerStatusMessageHandler.class);
     private final HashMap<String, OnlineServer> onlineServers;
     private final TextChannel generalChannel;
@@ -26,15 +26,16 @@ public class PlayerStatusChangedMessageHandler {
         OnlineServer server = onlineServers.get(serverId);
 
         if (server != null) {
-            server.updatePlayersInfo(msg.getNewPlayersOnline());
+            server.setPlayersOnline(msg.getNewPlayersOnline().getPlayersOnline());
+            server.setOnlinePlayerNames(msg.getNewPlayersOnline().getPlayerNamesList());
             ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus playerStatus = msg.getNewPlayerStatus();
             String playerUsername = msg.getPlayerUsername();
             String discordMessage;
             if (playerStatus == ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED) {
-                discordMessage = server.createServerChatMessage(playerUsername + " has joined the game");
+                discordMessage = server.getServerChatMessage(playerUsername + " has joined the game");
                 generalChannel.sendMessage(discordMessage).queue();
             } else if (playerStatus == ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT) {
-                discordMessage = server.createServerChatMessage(playerUsername + " has left the game");
+                discordMessage = server.getServerChatMessage(playerUsername + " has left the game");
                 generalChannel.sendMessage(discordMessage).queue();
             } else {
                 logger.error("Server with id \""

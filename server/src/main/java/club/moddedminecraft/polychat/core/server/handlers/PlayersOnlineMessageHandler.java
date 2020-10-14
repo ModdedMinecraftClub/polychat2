@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-public class PlayersOnlineMessageHandler {
-    private final static Logger logger = LoggerFactory.getLogger(ServerStatusMessageHandler.class);
+public final class PlayersOnlineMessageHandler {
+    private final static Logger logger = LoggerFactory.getLogger(PlayersOnlineMessageHandler.class);
     private final HashMap<String, OnlineServer> onlineServers;
 
     public PlayersOnlineMessageHandler(HashMap<String, OnlineServer> onlineServers) {
@@ -23,7 +23,8 @@ public class PlayersOnlineMessageHandler {
         OnlineServer server = onlineServers.get(serverId);
 
         if (server != null) {
-            server.updatePlayersInfo(msg);
+            server.setPlayersOnline(msg.getPlayersOnline());
+            server.setOnlinePlayerNames(msg.getPlayerNamesList());
         } else {
             logger.error("Server with id \""
                     + serverId

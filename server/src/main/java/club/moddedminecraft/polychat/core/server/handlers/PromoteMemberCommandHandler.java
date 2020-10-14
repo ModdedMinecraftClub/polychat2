@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.*;
 import java.util.HashMap;
 
-public class PromoteMemberCommandHandler {
+public final class PromoteMemberCommandHandler {
     private final TextChannel generalChannel;
     private final HashMap<String, OnlineServer> onlineServers;
 
@@ -28,8 +28,8 @@ public class PromoteMemberCommandHandler {
         if (server != null) {
             CommandProtos.GenericCommand command = CommandProtos.GenericCommand.newBuilder()
                     .setDiscordChannelId(generalChannel.getId())
-                    .setDiscordCommandName("!promote")
-                    .setDefaultCommand("/ranks add") // TODO: ask 132 if that's the right format;
+                    .setDiscordCommandName("promote")
+                    .setDefaultCommand("ranks add")
                     .setArgs(msg.getUsername() + " member")
                     .build();
             Any any = Any.pack(command);

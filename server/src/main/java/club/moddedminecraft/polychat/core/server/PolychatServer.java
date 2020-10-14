@@ -5,14 +5,22 @@ import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessage
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 import club.moddedminecraft.polychat.core.server.handlers.*;
 import com.google.protobuf.Any;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
+
 import club.moddedminecraft.polychat.core.networklibrary.Server;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
+import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
+
+import club.moddedminecraft.polychat.core.server.handlers.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 
@@ -28,6 +36,7 @@ public final class PolychatServer {
     private final HashMap<String, OnlineServer> onlineServers;
     private final TextChannel generalChannel;
 
+    private final static Logger logger = LoggerFactory.getLogger(PolychatServer.class);
     public static final int TICK_TIME_IN_MILLIS = 50;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
@@ -62,7 +71,7 @@ public final class PolychatServer {
         try {
             new PolychatServer().spin();
         } catch (IOException | LoginException | InterruptedException e) {
-            e.printStackTrace();
+            logger.error("Error while starting Polychat server", e);
         }
     }
 
@@ -116,14 +125,11 @@ public final class PolychatServer {
                     byte[] msgBytes = packedMsg.toByteArray();
 
                     // send the message to MC clients;
-                    for (OnlineServer server : onlineServers.values()) {
-                        ConnectedClient client = server.getClient();
-                        client.sendMessage(msgBytes);
-                    }
+                    server.broadcastMessageToAll(msgBytes);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Error occurred in Polychat server event loop", e);
         }
     }
 }
