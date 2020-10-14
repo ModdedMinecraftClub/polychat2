@@ -4,6 +4,7 @@ import club.moddedminecraft.polychat.core.messagelibrary.EventHandler;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 import club.moddedminecraft.polychat.core.server.OnlineServer;
+import com.google.protobuf.Any;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,17 @@ public final class PlayerStatusChangedMessageHandler {
             ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus playerStatus = msg.getNewPlayerStatus();
             String playerUsername = msg.getPlayerUsername();
             String discordMessage;
+
+            // forward message to other MC servers;
+            Any packedMsg = Any.pack(msg);
+            for (OnlineServer onlineServer : onlineServers.values()) {
+                ConnectedClient client = server.getClient();
+                if (client != author) {
+                    client.sendMessage(packedMsg.toByteArray());
+                }
+            }
+
+            // send message to Discord;
             if (playerStatus == ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED) {
                 discordMessage = server.getServerChatMessage(playerUsername + " has joined the game");
                 generalChannel.sendMessage(discordMessage).queue();
