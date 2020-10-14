@@ -60,7 +60,7 @@ public final class PolychatServer {
                 new ChatMessageHandler(generalChannel, onlineServers),
                 new PromoteMemberCommandHandler(generalChannel, onlineServers),
                 new ServerInfoMessageHandler(onlineServers),
-                new ServerStatusMessageHandler(onlineServers),
+                new ServerStatusMessageHandler(onlineServers, generalChannel),
                 new PlayersOnlineMessageHandler(onlineServers),
                 new PlayerStatusChangedMessageHandler(onlineServers, generalChannel),
                 new GenericCommandResultMessageHandler(jda)
