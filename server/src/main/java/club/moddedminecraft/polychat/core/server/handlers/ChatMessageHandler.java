@@ -26,12 +26,11 @@ public final class ChatMessageHandler {
     }
 
     private void sendMessageToDiscord(ChatProtos.ChatMessage msg) {
-        String discordMsg = "`"
-                + "[" + msg.getServerId() + "] "
-                + "[" + msg.getMessageAuthorRank() + "] "
-                + msg.getMessageAuthor() + ":"
-                + "` "
-                + msg.getMessageContent();
+        String discordMsg = msg.getMessage().replaceAll("§.", "");
+        discordMsg = "`"
+                + discordMsg.substring(0, msg.getMessageOffset()) +
+                "` "
+                + discordMsg.substring(msg.getMessageOffset());
         generalChannel.sendMessage(discordMsg).queue();
     }
 
