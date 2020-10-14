@@ -36,7 +36,7 @@ public final class PlayerStatusChangedMessageHandler {
             // forward message to other MC servers;
             Any packedMsg = Any.pack(msg);
             for (OnlineServer onlineServer : onlineServers.values()) {
-                ConnectedClient client = server.getClient();
+                ConnectedClient client = onlineServer.getClient();
                 if (client != author) {
                     client.sendMessage(packedMsg.toByteArray());
                 }
