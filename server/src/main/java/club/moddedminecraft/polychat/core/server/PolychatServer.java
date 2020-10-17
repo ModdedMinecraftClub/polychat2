@@ -112,10 +112,12 @@ public final class PolychatServer {
                     }
 
                     // construct Protobuf chat message from Discord message;
+                    String msgStringForClients =
+                            "[Discord] " + discordMsg.getAuthor().getName() + ": " + discordMsg.getContentRaw();
                     ChatProtos.ChatMessage protoChatMessage = ChatProtos.ChatMessage.newBuilder()
                             .setServerId("Discord")
-                            .setMessageAuthor(discordMsg.getAuthor().getName())
-                            .setMessageContent(discordMsg.getContentRaw())
+                            .setMessage(msgStringForClients)
+                            .setMessageOffset(msgStringForClients.indexOf(':'))
                             .build();
 
                     // pack the message;
