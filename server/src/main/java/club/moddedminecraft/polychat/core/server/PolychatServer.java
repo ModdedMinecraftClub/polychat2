@@ -2,23 +2,24 @@ package club.moddedminecraft.polychat.core.server;
 
 import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
-import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
+import club.moddedminecraft.polychat.core.server.discordcommands.ExecCommand;
+import club.moddedminecraft.polychat.core.server.discordcommands.OnlineCommand;
+import club.moddedminecraft.polychat.core.server.discordcommands.TpsCommand;
 import club.moddedminecraft.polychat.core.server.handlers.*;
 import com.google.protobuf.Any;
 
+import com.jagrosh.jdautilities.command.CommandClient;
+import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
-
 import club.moddedminecraft.polychat.core.networklibrary.Server;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
-import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 
-import club.moddedminecraft.polychat.core.server.handlers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +45,23 @@ public final class PolychatServer {
         queue = new ConcurrentLinkedDeque<GenericEvent>();
         onlineServers = new HashMap<>();
 
-        // set up JDA;
+        // set up JDA commands;
+        CommandClient commandClient = new CommandClientBuilder()
+                .setOwnerId("") // will need to be retrieved from YAML;
+                .setPrefix("!")
+                .addCommands(
+                        new OnlineCommand(onlineServers),
+                        new TpsCommand(onlineServers),
+                        new ExecCommand(onlineServers)
+                )
+                .build();
+
+        // set up main JDA;
         jda = JDABuilder.createDefault("") // will need to be retrieved from YAML;
-                .addEventListeners(new GenericJdaEventHandler(queue))
+                .addEventListeners(
+                        commandClient,
+                        new GenericJdaEventHandler(queue)
+                )
                 .build()
                 .awaitReady();
         generalChannel = jda.getTextChannelById(""); // same as above here;
