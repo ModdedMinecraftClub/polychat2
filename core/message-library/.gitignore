@@ -1,2 +1,2 @@
 # ignore generated protos
-*Protos.java
+src/generated
