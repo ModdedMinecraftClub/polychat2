@@ -1,12 +1,8 @@
-package club.moddedminecraft.polychat.core.server;
+package club.moddedminecraft.polychat.core.messagelibrary;
 
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
-
 import com.google.protobuf.Any;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -14,8 +10,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public final class PolychatMessageBus {
-    private final static Logger logger = LoggerFactory.getLogger(PolychatMessageBus.class);
+public final class PolychatProtobufMessageDispatcher {
     private final ArrayList<Object> eventHandlers = new ArrayList<>();
 
     public void addEventHandler(Object eventHandler) {
@@ -30,7 +25,7 @@ public final class PolychatMessageBus {
         eventHandlers.remove(eventHandler);
     }
 
-    public void handlePolychatMessage(Message message) {
+    public void handlePolychatMessage(Message message) throws RuntimeException {
         try {
             Any packedProtoMessage = Any.parseFrom(message.getData());
             for (Object handler : eventHandlers) {
@@ -48,7 +43,7 @@ public final class PolychatMessageBus {
                 }
             }
         } catch (Throwable t) { //catch errors from event handlers + the parseFrom error
-            logger.error("Failed to parse/unpack/handle message.", t);
+            throw new RuntimeException("Failed to parse/unpack/handle message.%s", t);
         }
     }
 
@@ -75,5 +70,4 @@ public final class PolychatMessageBus {
 
         return true;
     }
-
 }
