@@ -1,16 +1,13 @@
 package club.moddedminecraft.polychat.core.server;
 
-import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
 import club.moddedminecraft.polychat.core.server.discordcommands.ExecCommand;
 import club.moddedminecraft.polychat.core.server.discordcommands.OnlineCommand;
 import club.moddedminecraft.polychat.core.server.discordcommands.TpsCommand;
 import club.moddedminecraft.polychat.core.server.handlers.*;
-import com.google.protobuf.Any;
 
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import com.jagrosh.jdautilities.commons.waiter.EventWaiter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -36,11 +33,15 @@ public final class PolychatServer {
     private final JDA jda;
     private final HashMap<String, OnlineServer> onlineServers;
     private final TextChannel generalChannel;
+    private final MessageReceivedHandler messageReceivedHandler;
 
     private final static Logger logger = LoggerFactory.getLogger(PolychatServer.class);
     public static final int TICK_TIME_IN_MILLIS = 50;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
+        // set up TCP;
+        server = new Server(5005, 128);
+
         // set up JDA event queue & servers hashmap;
         queue = new ConcurrentLinkedDeque<GenericEvent>();
         onlineServers = new HashMap<>();
@@ -65,9 +66,7 @@ public final class PolychatServer {
                 .build()
                 .awaitReady();
         generalChannel = jda.getTextChannelById(""); // same as above here;
-
-        // set up TCP;
-        server = new Server(5005, 128);
+        messageReceivedHandler = new MessageReceivedHandler(generalChannel, server);
 
         // set up Protobuf message handlers;
         polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
@@ -115,40 +114,7 @@ public final class PolychatServer {
             while ((nextEvent = queue.poll()) != null) {
                 if (nextEvent instanceof MessageReceivedEvent) {
                     MessageReceivedEvent ev = (MessageReceivedEvent)nextEvent;
-                    net.dv8tion.jda.api.entities.Message discordMsg = ev.getMessage();
-
-                    // ignore messages from self and other bots;
-                    if (ev.getAuthor().isBot()) {
-                        break;
-                    }
-
-                    // ignore commands in this event handler;
-                    if (discordMsg.getContentRaw().startsWith("!")) {
-                        break;
-                    }
-
-                    // ignore non-#general
-                    if (discordMsg.getChannel().getId().equals(generalChannel.getId())) {
-                        break;
-                    }
-
-                    // construct Protobuf chat message from Discord message;
-                    String msgStringForClients =
-                            "[Discord] " + discordMsg.getAuthor().getName() + ": " + discordMsg.getContentRaw();
-                    ChatProtos.ChatMessage protoChatMessage = ChatProtos.ChatMessage.newBuilder()
-                            .setServerId("Discord")
-                            .setMessage(msgStringForClients)
-                            .setMessageOffset(msgStringForClients.indexOf(':'))
-                            .build();
-
-                    // pack the message;
-                    Any packedMsg = Any.pack(protoChatMessage);
-
-                    // convert the message to bytes;
-                    byte[] msgBytes = packedMsg.toByteArray();
-
-                    // send the message to MC clients;
-                    server.broadcastMessageToAll(msgBytes);
+                    messageReceivedHandler.handle(ev);
                 }
             }
         } catch (IOException e) {
