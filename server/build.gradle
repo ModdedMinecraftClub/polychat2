@@ -10,15 +10,32 @@ repositories {
     jcenter()
 }
 
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
 dependencies {
     implementation('net.dv8tion:JDA:4.2.0_188') {
         exclude module: 'opus-java'
     }
 
-    dependencies {
-        compile('ch.qos.logback:logback-classic:1.2.3')
-        compile 'com.google.protobuf:protobuf-java:3.0.0'
-        compile files('../core/message-library/build/libs/message-library.jar')
-        compile files('../core/network-library/build/libs/network-library.jar')
+    embed 'com.jagrosh:jda-utilities:3.0.4'
+    embed 'net.dv8tion:JDA:4.2.0_188'
+    embed 'ch.qos.logback:logback-classic:1.2.3'
+    embed 'com.google.protobuf:protobuf-java:3.0.0'
+    embed files('../core/message-library/build/libs/message-library.jar')
+    embed files('../core/network-library/build/libs/network-library.jar')
+}
+
+jar {
+    manifest {
+        attributes(
+            'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+            'Main-Class': 'club.moddedminecraft.polychat.core.server.PolychatServer'
+        )
+    }
+    from configurations.compile.findAll { !it.path.endsWith(".pom") }.collect {
+        it.isDirectory() ? it : zipTree(it)
     }
 }
