@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "club.moddedminecraft.polychat.fabric116.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ChatMessageMixin",
+    "PlayerJoinMixin",
+    "PlayerLeaveMixin",
+    "TickMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

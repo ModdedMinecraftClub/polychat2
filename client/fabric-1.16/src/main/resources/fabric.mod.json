@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "polychat",
+  "version": "${version}",
+
+  "name": "Polychat",
+  "description": "Fabirc 1.16 implementation of the Polychat Client",
+  "authors": [
+    "132ikl"
+  ],
+  "contact": {
+    "homepage": "https://github.com/moddedminecraftclub/polychat2",
+    "sources": "https://github.com/moddedminecraftclub/polychat2"
+  },
+  "license": "GPLv3",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "club.moddedminecraft.polychat.fabric116.Polychat"
+    ]
+  },
+  "mixins": [
+    "polychat.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}
