@@ -116,6 +116,7 @@ public final class PolychatServer {
                 if (nextEvent instanceof MessageReceivedEvent) {
                     MessageReceivedEvent ev = (MessageReceivedEvent)nextEvent;
                     net.dv8tion.jda.api.entities.Message discordMsg = ev.getMessage();
+
                     // ignore messages from self and other bots;
                     if (ev.getAuthor().isBot()) {
                         break;
@@ -123,6 +124,11 @@ public final class PolychatServer {
 
                     // ignore commands in this event handler;
                     if (discordMsg.getContentRaw().startsWith("!")) {
+                        break;
+                    }
+
+                    // ignore non-#general
+                    if (discordMsg.getChannel().getId().equals(generalChannel.getId())) {
                         break;
                     }
 
