@@ -29,7 +29,7 @@ public class MessageReceivedHandler {
         }
 
         // ignore non-#general
-        if (discordMsg.getChannel().getId().equals(generalChannel.getId())) {
+        if (!discordMsg.getChannel().getId().equals(generalChannel.getId())) {
             return;
         }
 
