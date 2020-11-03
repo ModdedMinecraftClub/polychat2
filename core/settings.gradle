@@ -1,3 +1,4 @@
 rootProject.name = 'polychat2-core'
 include 'message-library'
 include 'network-library'
+include 'common'

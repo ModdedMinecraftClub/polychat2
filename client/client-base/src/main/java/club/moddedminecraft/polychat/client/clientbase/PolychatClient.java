@@ -2,7 +2,7 @@ package club.moddedminecraft.polychat.client.clientbase;
 
 import club.moddedminecraft.polychat.client.clientbase.handlers.ChatMessageHandler;
 import club.moddedminecraft.polychat.client.clientbase.util.MuteStorage;
-import club.moddedminecraft.polychat.client.clientbase.util.YamlConfig;
+import club.moddedminecraft.polychat.core.common.YamlConfig;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import club.moddedminecraft.polychat.core.networklibrary.Client;
