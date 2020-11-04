@@ -9,6 +9,7 @@ repositories {
 dependencies {
     compile files('../../core/message-library/build/libs/message-library.jar')
     compile files('../../core/network-library/build/libs/network-library.jar')
+    compile files("../../core/common/build/libs/common.jar")
     compile "com.google.protobuf:protobuf-java:3.13.0"
     compile "org.yaml:snakeyaml:1.+"
 }

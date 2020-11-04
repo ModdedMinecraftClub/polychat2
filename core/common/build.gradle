@@ -1,0 +1,10 @@
+plugins{
+	id 'java'
+}
+
+dependencies {
+	// Use JUnit test framework
+	testImplementation 'junit:junit:4.13'
+
+	compile "org.yaml:snakeyaml:1.+"
+}

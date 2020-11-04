@@ -1,4 +1,4 @@
-package club.moddedminecraft.polychat.client.clientbase.util;
+package club.moddedminecraft.polychat.core.common;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;

@@ -47,6 +47,7 @@ dependencies {
     // embed these into the jar
     embed files('../../core/message-library/build/libs/message-library.jar')
     embed files('../../core/network-library/build/libs/network-library.jar')
+    embed files("../../core/common/build/libs/common.jar")
     embed files('../client-base/build/libs/client-base.jar')
     embed "com.google.protobuf:protobuf-java:3.13.0"
     embed "org.yaml:snakeyaml:1.+"
