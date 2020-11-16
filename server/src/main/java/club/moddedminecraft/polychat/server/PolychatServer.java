@@ -54,7 +54,7 @@ public final class PolychatServer {
         // set up JDA commands;
         CommandClient commandClient = new CommandClientBuilder()
                 .setOwnerId(yamlConfig.get("ownerId")) // will need to be retrieved from YAML;
-                .setPrefix(yamlConfig.get("prefix"))
+                .setPrefix(yamlConfig.get("commandPrefix"))
                 .addCommands(
                         new ExecCommand(server, onlineServers),
                         new OnlineCommand(onlineServers),
@@ -91,7 +91,7 @@ public final class PolychatServer {
         YamlConfig def = YamlConfig.fromInMemoryString("");
         def.set("token", "");
         def.set("ownerId", "");
-        def.set("prefix", "");
+        def.set("commandPrefix", "!");
         def.set("generalChannelId", "");
         def.set("tcpPort", 5005);
         def.set("bufferSize", 4096);
