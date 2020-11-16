@@ -23,7 +23,6 @@ public final class PromoteMemberCommandHandler {
     @EventHandler
     public void handle(CommandProtos.PromoteMemberCommand msg, ConnectedClient author) {
         String serverId = msg.getServerId().toUpperCase();
-        System.out.println(serverId);
         OnlineServer server = onlineServers.get(serverId);
 
         if (server != null) {
