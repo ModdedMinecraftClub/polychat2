@@ -19,7 +19,7 @@ public class PlayerStatusChangedMessageHandler {
     @EventHandler
     public void handle(ServerProtos.ServerPlayerStatusChangedEvent statusMessage, ConnectedClient author) {
         String id = statusMessage.getNewPlayersOnline().getServerId();
-        String message = "[" + id + "]" + statusMessage.getPlayerUsername() + " has " + statusMessage.getNewPlayerStatus().toString().toLowerCase() + " the game";
+        String message = id + " " + statusMessage.getPlayerUsername() + " has " + statusMessage.getNewPlayerStatus().toString().toLowerCase() + " the game";
         clientApiBase.sendChatMessage(message, muteStorage.getMuteList());
     }
 }

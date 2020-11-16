@@ -20,14 +20,15 @@ public final class PlayersOnlineMessageHandler {
     @EventHandler
     public void handle(ServerProtos.ServerPlayersOnline msg, ConnectedClient author) {
         String serverId = msg.getServerId().toUpperCase();
-        OnlineServer server = onlineServers.get(serverId);
+        String unformattedId = serverId.replaceAll("§.", "").replaceAll("[\\[\\]]", "");
+        OnlineServer server = onlineServers.get(unformattedId);
 
         if (server != null) {
             server.setPlayersOnline(msg.getPlayersOnline());
             server.setOnlinePlayerNames(msg.getPlayerNamesList());
         } else {
             logger.error("Server with id \""
-                    + serverId
+                    + unformattedId
                     + "\" has unexpectedly sent ServerPlayersOnline message despite not being marked as online. Have you sent ServerInfo message on server startup?");
         }
     }

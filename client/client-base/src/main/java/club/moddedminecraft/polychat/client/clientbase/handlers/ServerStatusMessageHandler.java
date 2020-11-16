@@ -18,6 +18,6 @@ public class ServerStatusMessageHandler {
 
     @EventHandler
     public void handle(ServerProtos.ServerStatus statusMessage, ConnectedClient author) {
-        clientApiBase.sendChatMessage("[" + statusMessage.getServerId() + "]" + " Server " + statusMessage.getStatus().toString().toLowerCase(), muteStorage.getMuteList());
+        clientApiBase.sendChatMessage(statusMessage.getServerId() + " Server " + statusMessage.getStatus().toString().toLowerCase(), muteStorage.getMuteList());
     }
 }

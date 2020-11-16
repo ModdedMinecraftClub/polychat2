@@ -22,7 +22,7 @@ public class ClientCallbacks {
     private ServerProtos.ServerPlayersOnline getPlayersOnline() {
         ArrayList<String> playersOnline = client.getClientApi().getOnlinePlayers();
         return ServerProtos.ServerPlayersOnline.newBuilder()
-                .setServerId(client.getServerId())
+                .setServerId(client.getFormattedServerId())
                 .setPlayersOnline(playersOnline.size())
                 .addAllPlayerNames(playersOnline)
                 .build();
@@ -60,7 +60,7 @@ public class ClientCallbacks {
         String rawContent = content.replaceAll("§.", "");
         String rawMessage = message.replaceAll("§.", "");
         ChatProtos.ChatMessage chatMessage = ChatProtos.ChatMessage.newBuilder()
-                .setServerId(client.getServerId())
+                .setServerId(client.getFormattedServerId())
                 .setMessage(content)
                 .setMessageOffset(rawContent.lastIndexOf(rawMessage))
                 .build();
