@@ -3,6 +3,7 @@ package club.moddedminecraft.polychat.core.server;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
 import club.moddedminecraft.polychat.core.server.discordcommands.ExecCommand;
 import club.moddedminecraft.polychat.core.server.discordcommands.OnlineCommand;
+import club.moddedminecraft.polychat.core.server.discordcommands.RestartCommand;
 import club.moddedminecraft.polychat.core.server.discordcommands.TpsCommand;
 import club.moddedminecraft.polychat.core.server.handlers.*;
 
@@ -51,9 +52,10 @@ public final class PolychatServer {
                 .setOwnerId("") // will need to be retrieved from YAML;
                 .setPrefix("!")
                 .addCommands(
+                        new ExecCommand(server, onlineServers),
                         new OnlineCommand(onlineServers),
-                        new TpsCommand(onlineServers),
-                        new ExecCommand(onlineServers)
+                        new RestartCommand(onlineServers),
+                        new TpsCommand(onlineServers)
                 )
                 .build();
 

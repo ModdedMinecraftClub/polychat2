@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public final class PromoteMemberCommandHandler {
@@ -29,8 +30,8 @@ public final class PromoteMemberCommandHandler {
             CommandProtos.GenericCommand command = CommandProtos.GenericCommand.newBuilder()
                     .setDiscordChannelId(generalChannel.getId())
                     .setDiscordCommandName("promote")
-                    .setDefaultCommand("ranks add")
-                    .setArgs(msg.getUsername() + " member")
+                    .setDefaultCommand("ranks add $1 member")
+                    .addArgs(msg.getUsername())
                     .build();
             Any any = Any.pack(command);
             server.getClient().sendMessage(any.toByteArray());

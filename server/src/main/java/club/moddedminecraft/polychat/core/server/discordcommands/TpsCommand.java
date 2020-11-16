@@ -8,6 +8,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class TpsCommand extends Command {
@@ -45,7 +46,7 @@ public class TpsCommand extends Command {
                     .setDiscordChannelId(event.getChannel().getId())
                     .setDiscordCommandName("tps")
                     .setDefaultCommand("forge tps")
-                    .setArgs("")
+                    .addAllArgs(Collections.emptyList())
                     .build();
             Any any = Any.pack(cmd);
             server.getClient().sendMessage(any.toByteArray());

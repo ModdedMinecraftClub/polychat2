@@ -8,7 +8,8 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 
-import java.awt.*;
+import java.awt.Color;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class RestartCommand extends Command {
@@ -47,7 +48,7 @@ public class RestartCommand extends Command {
                     .setDiscordChannelId(event.getChannel().getId())
                     .setDiscordCommandName("restart")
                     .setDefaultCommand("stop")
-                    .setArgs("")
+                    .addAllArgs(Collections.emptyList())
                     .build();
             Any any = Any.pack(cmd);
             server.getClient().sendMessage(any.toByteArray());
