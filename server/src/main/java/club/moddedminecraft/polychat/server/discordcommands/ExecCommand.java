@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -77,7 +77,7 @@ public class ExecCommand extends Command {
             if (id.equals("<ALL>")) {
                 networkServer.broadcastMessageToAll(bytes);
             } else {
-                server.getClient().sendMessage(any.toByteArray());
+                server.getClient().sendMessage(bytes);
             }
         }
     }
