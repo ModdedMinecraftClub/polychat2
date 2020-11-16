@@ -1,4 +1,4 @@
-package club.moddedminecraft.polychat.server.handlers;
+package club.moddedminecraft.polychat.server.handlers.protomessages;
 
 import club.moddedminecraft.polychat.core.messagelibrary.EventHandler;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
