@@ -35,7 +35,7 @@ public class MessageReceivedHandler {
 
         // construct Protobuf chat message from Discord message;
         String msgStringForClients =
-                "§9[Discord] §7" + discordMsg.getAuthor().getName() + "§r: " + discordMsg.getContentRaw();
+                "§9[Discord] §7" + discordMsg.getAuthor().getName() + "§r: " + discordMsg.getContentStripped();
         ChatProtos.ChatMessage protoChatMessage = ChatProtos.ChatMessage.newBuilder()
                 .setServerId("Discord")
                 .setMessage(msgStringForClients)
