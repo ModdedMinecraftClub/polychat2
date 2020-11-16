@@ -34,13 +34,11 @@ public class Runner extends CommandRunner implements ConsoleCommandSender {
 
     @Override
     public void sendMessage(String text) {
-        System.out.println(text);
         this.output.add(text.replaceAll("§.", ""));
     }
 
     @Override
     public void sendMessage(String[] strings) {
-        System.out.println(strings);
         for (String text : strings) {
             this.output.add(text.replaceAll("§.", ""));
         }
