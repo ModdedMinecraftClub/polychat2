@@ -2,11 +2,12 @@ package club.moddedminecraft.polychat.server;
 
 import club.moddedminecraft.polychat.core.common.YamlConfig;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
+import club.moddedminecraft.polychat.core.networklibrary.Message;
+import club.moddedminecraft.polychat.core.networklibrary.Server;
 import club.moddedminecraft.polychat.server.discordcommands.ExecCommand;
 import club.moddedminecraft.polychat.server.discordcommands.OnlineCommand;
 import club.moddedminecraft.polychat.server.discordcommands.RestartCommand;
 import club.moddedminecraft.polychat.server.discordcommands.TpsCommand;
-
 import club.moddedminecraft.polychat.server.handlers.jdaevents.GenericJdaEventHandler;
 import club.moddedminecraft.polychat.server.handlers.jdaevents.MessageReceivedHandler;
 import club.moddedminecraft.polychat.server.handlers.protomessages.*;
@@ -17,16 +18,12 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-
-import club.moddedminecraft.polychat.core.networklibrary.Server;
-import club.moddedminecraft.polychat.core.networklibrary.Message;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -44,9 +41,8 @@ public final class PolychatServer {
     public static final int TICK_TIME_IN_MILLIS = 50;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
-        // get YAML config;
-        logger.info(Paths.get("").toAbsolutePath().toString());
-        YamlConfig yamlConfig = YamlConfig.fromFilesystem(Paths.get("config.yml"));
+        // get YAML config
+        YamlConfig yamlConfig = getConfig();
 
         // set up TCP;
         server = new Server(yamlConfig.get("tcpPort"), yamlConfig.get("bufferSize"));
@@ -91,6 +87,37 @@ public final class PolychatServer {
         );
     }
 
+    private YamlConfig getDefaultConfig(Path path) throws IOException {
+        YamlConfig def = YamlConfig.fromInMemoryString("");
+        def.set("token", "");
+        def.set("ownerId", "");
+        def.set("prefix", "");
+        def.set("generalChannelId", "");
+        def.set("tcpPort", 5005);
+        def.set("bufferSize", 4096);
+        def.saveToFile(path);
+        return def;
+    }
+
+    public YamlConfig getConfig() {
+        try {
+            Path configPath = Paths.get("polychat.yml");
+
+            if (configPath.toFile().createNewFile()) {
+                getDefaultConfig(configPath);
+                logger.error("You must have a config to use polychat! Creating default polychat.yml...");
+                System.exit(0);
+            }
+
+            return YamlConfig.fromFilesystem(configPath);
+        } catch (IOException e) {
+            logger.error("Failed to create a new config!");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return YamlConfig.fromInMemoryString("");
+    }
+
     public static void main(String[] args) {
         try {
             new PolychatServer().spin();
@@ -123,7 +150,7 @@ public final class PolychatServer {
             GenericEvent nextEvent;
             while ((nextEvent = queue.poll()) != null) {
                 if (nextEvent instanceof MessageReceivedEvent) {
-                    MessageReceivedEvent ev = (MessageReceivedEvent)nextEvent;
+                    MessageReceivedEvent ev = (MessageReceivedEvent) nextEvent;
                     messageReceivedHandler.handle(ev);
                 }
             }
