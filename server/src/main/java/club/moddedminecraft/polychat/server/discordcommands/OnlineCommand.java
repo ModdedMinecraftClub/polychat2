@@ -1,6 +1,6 @@
-package club.moddedminecraft.polychat.core.server.discordcommands;
+package club.moddedminecraft.polychat.server.discordcommands;
 
-import club.moddedminecraft.polychat.core.server.OnlineServer;
+import club.moddedminecraft.polychat.server.OnlineServer;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -27,7 +27,7 @@ public class OnlineCommand extends Command {
         if (onlineServers.isEmpty()) {
             EmbedBuilder errEb = new EmbedBuilder()
                     .setTitle("Error")
-                    .setDescription("No servers online found!")
+                    .setDescription("No online servers found!")
                     .setColor(Color.RED);
             event.reply(errEb.build());
             return;

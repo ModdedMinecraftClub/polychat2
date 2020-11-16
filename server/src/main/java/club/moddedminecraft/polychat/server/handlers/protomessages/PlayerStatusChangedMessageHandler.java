@@ -1,9 +1,9 @@
-package club.moddedminecraft.polychat.core.server.handlers;
+package club.moddedminecraft.polychat.server.handlers.protomessages;
 
 import club.moddedminecraft.polychat.core.messagelibrary.EventHandler;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
-import club.moddedminecraft.polychat.core.server.OnlineServer;
+import club.moddedminecraft.polychat.server.OnlineServer;
 import com.google.protobuf.Any;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public final class PlayerStatusChangedMessageHandler {
 
     @EventHandler
     public void handle(ServerProtos.ServerPlayerStatusChangedEvent msg, ConnectedClient author) {
-        String serverId = msg.getNewPlayersOnline().getServerId();
+        String serverId = msg.getNewPlayersOnline().getServerId().toUpperCase();
         OnlineServer server = onlineServers.get(serverId);
 
         if (server != null) {

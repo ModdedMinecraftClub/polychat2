@@ -1,9 +1,9 @@
-package club.moddedminecraft.polychat.core.server.handlers;
+package club.moddedminecraft.polychat.server.handlers.protomessages;
 
 import club.moddedminecraft.polychat.core.messagelibrary.CommandProtos;
 import club.moddedminecraft.polychat.core.messagelibrary.EventHandler;
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
-import club.moddedminecraft.polychat.core.server.OnlineServer;
+import club.moddedminecraft.polychat.server.OnlineServer;
 import com.google.protobuf.Any;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -22,15 +22,15 @@ public final class PromoteMemberCommandHandler {
 
     @EventHandler
     public void handle(CommandProtos.PromoteMemberCommand msg, ConnectedClient author) {
-        String serverId = msg.getServerId();
+        String serverId = msg.getServerId().toUpperCase();
         OnlineServer server = onlineServers.get(serverId);
 
         if (server != null) {
             CommandProtos.GenericCommand command = CommandProtos.GenericCommand.newBuilder()
                     .setDiscordChannelId(generalChannel.getId())
                     .setDiscordCommandName("promote")
-                    .setDefaultCommand("ranks add")
-                    .setArgs(msg.getUsername() + " member")
+                    .setDefaultCommand("ranks add $1 member")
+                    .addArgs(msg.getUsername())
                     .build();
             Any any = Any.pack(command);
             server.getClient().sendMessage(any.toByteArray());

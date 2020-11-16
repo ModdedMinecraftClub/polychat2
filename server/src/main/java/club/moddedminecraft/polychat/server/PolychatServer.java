@@ -1,11 +1,14 @@
-package club.moddedminecraft.polychat.core.server;
+package club.moddedminecraft.polychat.server;
 
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
-import club.moddedminecraft.polychat.core.server.discordcommands.ExecCommand;
-import club.moddedminecraft.polychat.core.server.discordcommands.OnlineCommand;
-import club.moddedminecraft.polychat.core.server.discordcommands.TpsCommand;
-import club.moddedminecraft.polychat.core.server.handlers.*;
+import club.moddedminecraft.polychat.server.discordcommands.ExecCommand;
+import club.moddedminecraft.polychat.server.discordcommands.OnlineCommand;
+import club.moddedminecraft.polychat.server.discordcommands.RestartCommand;
+import club.moddedminecraft.polychat.server.discordcommands.TpsCommand;
 
+import club.moddedminecraft.polychat.server.handlers.jdaevents.GenericJdaEventHandler;
+import club.moddedminecraft.polychat.server.handlers.jdaevents.MessageReceivedHandler;
+import club.moddedminecraft.polychat.server.handlers.protomessages.*;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -51,9 +54,10 @@ public final class PolychatServer {
                 .setOwnerId("") // will need to be retrieved from YAML;
                 .setPrefix("!")
                 .addCommands(
+                        new ExecCommand(server, onlineServers),
                         new OnlineCommand(onlineServers),
-                        new TpsCommand(onlineServers),
-                        new ExecCommand(onlineServers)
+                        new RestartCommand(onlineServers),
+                        new TpsCommand(onlineServers)
                 )
                 .build();
 

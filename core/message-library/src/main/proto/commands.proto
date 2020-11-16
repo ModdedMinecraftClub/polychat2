@@ -9,7 +9,7 @@ message GenericCommand {
     string discordChannelId = 1;
     string discordCommandName = 2;
     string defaultCommand = 3;
-    string args = 4;
+    repeated string args = 4;
 }
 
 message GenericCommandResult {

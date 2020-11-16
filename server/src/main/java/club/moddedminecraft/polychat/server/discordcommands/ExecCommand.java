@@ -1,7 +1,8 @@
-package club.moddedminecraft.polychat.core.server.discordcommands;
+package club.moddedminecraft.polychat.server.discordcommands;
 
 import club.moddedminecraft.polychat.core.messagelibrary.CommandProtos;
-import club.moddedminecraft.polychat.core.server.OnlineServer;
+import club.moddedminecraft.polychat.core.networklibrary.Server;
+import club.moddedminecraft.polychat.server.OnlineServer;
 import com.google.protobuf.Any;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -15,9 +16,11 @@ import java.util.HashMap;
 
 public class ExecCommand extends Command {
 
+    private final Server networkServer;
     private final HashMap<String, OnlineServer> onlineServers;
 
-    public ExecCommand(HashMap<String, OnlineServer> onlineServers) {
+    public ExecCommand(Server networkServer, HashMap<String, OnlineServer> onlineServers) {
+        this.networkServer = networkServer;
         this.onlineServers = onlineServers;
         this.name = "exec";
         this.help = "Executes a command in-game";
@@ -51,14 +54,11 @@ public class ExecCommand extends Command {
         }
 
         // extract all the info from args array;
-        String id = args[0];
-        String command = args[1];
-        String[] commandArgs = Arrays.copyOfRange(args, 2, args.length);
-        // join in-game command args into a string, because that's what protobuf msg uses;
-        String commandArgsString = String.join(" ", commandArgs);
+        String id = args[0].toUpperCase();
+        String[] commandArgs = Arrays.copyOfRange(args, 1, args.length);
 
         OnlineServer server = onlineServers.get(id);
-        if (server == null) {
+        if (server == null && !id.equals("<ALL>")) {
             EmbedBuilder errEb = new EmbedBuilder()
                     .setTitle("Error")
                     .setDescription("Server with ID " + "`" + id + "`" + " not found.")
@@ -68,11 +68,17 @@ public class ExecCommand extends Command {
             CommandProtos.GenericCommand cmd = CommandProtos.GenericCommand.newBuilder()
                     .setDiscordChannelId(event.getChannel().getId())
                     .setDiscordCommandName("exec")
-                    .setDefaultCommand(command)
-                    .setArgs(commandArgsString)
+                    .setDefaultCommand("$args")
+                    .addAllArgs(Arrays.asList(commandArgs))
                     .build();
             Any any = Any.pack(cmd);
-            server.getClient().sendMessage(any.toByteArray());
+            byte[] bytes = any.toByteArray();
+
+            if (id.equals("<ALL>")) {
+                networkServer.broadcastMessageToAll(bytes);
+            } else {
+                server.getClient().sendMessage(bytes);
+            }
         }
     }
 }

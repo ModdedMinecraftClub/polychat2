@@ -32,7 +32,7 @@ jar {
     manifest {
         attributes(
             'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-            'Main-Class': 'club.moddedminecraft.polychat.core.server.PolychatServer'
+            'Main-Class': 'club.moddedminecraft.polychat.server.PolychatServer'
         )
     }
     from configurations.compile.findAll { !it.path.endsWith(".pom") }.collect {

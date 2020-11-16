@@ -1,4 +1,4 @@
-package club.moddedminecraft.polychat.core.server.handlers;
+package club.moddedminecraft.polychat.server.handlers.jdaevents;
 
 import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
 import club.moddedminecraft.polychat.core.networklibrary.Server;
@@ -35,7 +35,7 @@ public class MessageReceivedHandler {
 
         // construct Protobuf chat message from Discord message;
         String msgStringForClients =
-                "§9[Discord] §7" + discordMsg.getAuthor().getName() + "§r: " + discordMsg.getContentRaw();
+                "§9[Discord] §7" + discordMsg.getAuthor().getName() + "§r: " + discordMsg.getContentStripped();
         ChatProtos.ChatMessage protoChatMessage = ChatProtos.ChatMessage.newBuilder()
                 .setServerId("Discord")
                 .setMessage(msgStringForClients)
