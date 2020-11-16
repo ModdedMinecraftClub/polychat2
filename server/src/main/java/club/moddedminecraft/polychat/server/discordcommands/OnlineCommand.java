@@ -27,7 +27,7 @@ public class OnlineCommand extends Command {
         if (onlineServers.isEmpty()) {
             EmbedBuilder errEb = new EmbedBuilder()
                     .setTitle("Error")
-                    .setDescription("No servers online found!")
+                    .setDescription("No online servers found!")
                     .setColor(Color.RED);
             event.reply(errEb.build());
             return;
