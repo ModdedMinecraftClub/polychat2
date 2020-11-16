@@ -1,3 +1,5 @@
+# Ignore local config with sensitive data
+polychat.yml
 
 # Ignore Gradle project-specific cache directory
 .gradle
