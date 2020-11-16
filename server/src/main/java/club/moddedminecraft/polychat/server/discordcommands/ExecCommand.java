@@ -54,11 +54,11 @@ public class ExecCommand extends Command {
         }
 
         // extract all the info from args array;
-        String id = args[0];
+        String id = args[0].toUpperCase();
         String[] commandArgs = Arrays.copyOfRange(args, 1, args.length);
 
         OnlineServer server = onlineServers.get(id);
-        if (server == null && !id.equals("all")) {
+        if (server == null && !id.equals("ALL")) {
             EmbedBuilder errEb = new EmbedBuilder()
                     .setTitle("Error")
                     .setDescription("Server with ID " + "`" + id + "`" + " not found.")
@@ -74,7 +74,7 @@ public class ExecCommand extends Command {
             Any any = Any.pack(cmd);
             byte[] bytes = any.toByteArray();
 
-            if (id.equals("all")) {
+            if (id.equals("ALL")) {
                 networkServer.broadcastMessageToAll(bytes);
             } else {
                 server.getClient().sendMessage(any.toByteArray());

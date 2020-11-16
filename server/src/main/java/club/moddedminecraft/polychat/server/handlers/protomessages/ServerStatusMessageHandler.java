@@ -23,7 +23,7 @@ public final class ServerStatusMessageHandler {
 
     @EventHandler
     public void handle(ServerProtos.ServerStatus msg, ConnectedClient author) {
-        String serverId = msg.getServerId();
+        String serverId = msg.getServerId().toUpperCase();
         OnlineServer server = onlineServers.get(serverId);
         ServerProtos.ServerStatus.ServerStatusEnum status = msg.getStatus();
 

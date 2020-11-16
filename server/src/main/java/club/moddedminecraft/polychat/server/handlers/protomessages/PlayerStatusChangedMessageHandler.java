@@ -23,7 +23,7 @@ public final class PlayerStatusChangedMessageHandler {
 
     @EventHandler
     public void handle(ServerProtos.ServerPlayerStatusChangedEvent msg, ConnectedClient author) {
-        String serverId = msg.getNewPlayersOnline().getServerId();
+        String serverId = msg.getNewPlayersOnline().getServerId().toUpperCase();
         OnlineServer server = onlineServers.get(serverId);
 
         if (server != null) {

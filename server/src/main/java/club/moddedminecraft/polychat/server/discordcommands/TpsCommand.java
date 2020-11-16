@@ -34,7 +34,7 @@ public class TpsCommand extends Command {
             return;
         }
 
-        OnlineServer server = onlineServers.get(event.getArgs());
+        OnlineServer server = onlineServers.get(event.getArgs().toUpperCase());
         if (server == null) {
             EmbedBuilder errEb = new EmbedBuilder()
                     .setTitle("Error")

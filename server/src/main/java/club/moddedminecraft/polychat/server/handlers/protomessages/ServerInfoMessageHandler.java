@@ -17,8 +17,8 @@ public final class ServerInfoMessageHandler {
     @EventHandler
     public void handle(ServerProtos.ServerInfo msg, ConnectedClient author) {
         // if old then replace with new server
-        onlineServers.remove(msg.getServerId());
+        onlineServers.remove(msg.getServerId().toUpperCase());
         OnlineServer newServer = new OnlineServer(msg, author);
-        onlineServers.put(msg.getServerId(), newServer);
+        onlineServers.put(msg.getServerId().toUpperCase(), newServer);
     }
 }

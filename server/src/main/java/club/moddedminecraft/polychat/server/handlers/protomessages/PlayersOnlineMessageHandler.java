@@ -19,7 +19,7 @@ public final class PlayersOnlineMessageHandler {
 
     @EventHandler
     public void handle(ServerProtos.ServerPlayersOnline msg, ConnectedClient author) {
-        String serverId = msg.getServerId();
+        String serverId = msg.getServerId().toUpperCase();
         OnlineServer server = onlineServers.get(serverId);
 
         if (server != null) {
