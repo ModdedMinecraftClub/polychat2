@@ -22,8 +22,8 @@ public final class GenericCommandResultMessageHandler {
     @EventHandler
     public void handle(CommandProtos.GenericCommandResult msg, ConnectedClient author) {
         EmbedBuilder eb = new EmbedBuilder()
-                .setTitle("Command executed")
-                .setColor(Color.BLUE) // TODO: ask 132 for format colour comes in;
+                .setTitle("Command " + "`" + msg.getCommand() + "`" + " executed")
+                .setColor(Color.decode(msg.getColour()))
                 .addField("Server", msg.getServerId(), false)
                 .addField("Command output", msg.getCommandOutput(), false);
         TextChannel channelCmdOriginatedFrom = jda.getTextChannelById(msg.getDiscordChannelId());
