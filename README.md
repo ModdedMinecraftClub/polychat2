@@ -9,6 +9,7 @@ Polychat is a messaging protcol to exchange chat messages between Discord and mu
     * Forge 1.12.2
     * Forge 1.16.4
 
+
 ## Quickstart
 1. Download server and appropriate client jars from [releases page](https://github.com/ModdedMinecraftClub/polychat2/releases)
 2. Create a new directory for your server and run the jar (`java -jar server.jar`)
@@ -36,6 +37,9 @@ overrides:
 
 ## Member bot integration
 Polychat also has integration with [MMCC's MemberBot](https://github.com/ModdedMinecraftClub/Mmcc.MemberBot). Polychat can automatically accept promote and execute commands from MemberBot. You can also override this using `promote` in the overrides section. See MemberBot README for setup details.
+
+## Trello
+We use Trello to manage this project. For transparency, you can see the our Trello board [here](https://trello.com/b/encWIW9k).
 
 ----
 ¹: This feature may not seem very useful currently, but configurable custom commands are planned so this feature is mostly intended for that and the member bot promoting.
