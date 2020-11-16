@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -58,7 +58,7 @@ public class ExecCommand extends Command {
         String[] commandArgs = Arrays.copyOfRange(args, 1, args.length);
 
         OnlineServer server = onlineServers.get(id);
-        if (server == null && !id.equals("ALL")) {
+        if (server == null && !id.equals("<ALL>")) {
             EmbedBuilder errEb = new EmbedBuilder()
                     .setTitle("Error")
                     .setDescription("Server with ID " + "`" + id + "`" + " not found.")
@@ -74,7 +74,7 @@ public class ExecCommand extends Command {
             Any any = Any.pack(cmd);
             byte[] bytes = any.toByteArray();
 
-            if (id.equals("ALL")) {
+            if (id.equals("<ALL>")) {
                 networkServer.broadcastMessageToAll(bytes);
             } else {
                 server.getClient().sendMessage(any.toByteArray());
