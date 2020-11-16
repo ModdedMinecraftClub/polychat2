@@ -1,6 +1,7 @@
 package club.moddedminecraft.polychat.client.bukkit1710;
 
 import club.moddedminecraft.polychat.client.clientbase.ClientApiBase;
+import club.moddedminecraft.polychat.client.clientbase.CommandRunner;
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -116,5 +118,11 @@ public class Polychat extends JavaPlugin implements Listener, ClientApiBase {
     public Path getConfigDirectory() {
         return getDataFolder().toPath();
     }
+
+    @Override
+    public CommandRunner getRunner(String command) {
+        return new Runner(command, server);
+    }
+
 
 }

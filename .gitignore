@@ -15,5 +15,15 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
+# MC logs
+logs
+
 # IntelliJ Idea
 .idea
+
+# Emacs
+.projectile
+.project
+.classpath
+.settings
+bin

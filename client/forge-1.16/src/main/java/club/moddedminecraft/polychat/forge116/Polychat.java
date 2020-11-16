@@ -1,6 +1,7 @@
 package club.moddedminecraft.polychat.forge116;
 
 import club.moddedminecraft.polychat.client.clientbase.ClientApiBase;
+import club.moddedminecraft.polychat.client.clientbase.CommandRunner;
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import net.minecraft.command.CommandSource;
@@ -125,5 +126,10 @@ public class Polychat implements ClientApiBase {
     @Override
     public Path getConfigDirectory() {
         return FMLPaths.CONFIGDIR.get();
+    }
+
+    @Override
+    public CommandRunner getRunner(String comamnd) {
+        return new Runner(comamnd, server);
     }
 }
