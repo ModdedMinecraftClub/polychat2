@@ -2,6 +2,8 @@ package club.moddedminecraft.polychat.client.clientbase;
 
 import club.moddedminecraft.polychat.client.clientbase.handlers.ChatMessageHandler;
 import club.moddedminecraft.polychat.client.clientbase.handlers.CommandMessageHandler;
+import club.moddedminecraft.polychat.client.clientbase.handlers.PlayerStatusChangedMessageHandler;
+import club.moddedminecraft.polychat.client.clientbase.handlers.ServerStatusMessageHandler;
 import club.moddedminecraft.polychat.client.clientbase.util.MuteStorage;
 import club.moddedminecraft.polychat.core.common.YamlConfig;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
@@ -61,8 +63,12 @@ public class PolychatClient {
         muteStorage = new MuteStorage(clientApi.getConfigDirectory());
         serverId = config.getOrDefault("serverId", "ID");
 
-        polychatProtobufMessageDispatcher.addEventHandlers(new ChatMessageHandler(clientApi, muteStorage),
-                new CommandMessageHandler(clientApi, this));
+        polychatProtobufMessageDispatcher.addEventHandlers(
+                new ChatMessageHandler(clientApi, muteStorage),
+                new CommandMessageHandler(clientApi, this),
+                new ServerStatusMessageHandler(clientApi, muteStorage),
+                new PlayerStatusChangedMessageHandler(clientApi, muteStorage)
+        );
         setupInfoMessage();
         playerThread.start();
     }

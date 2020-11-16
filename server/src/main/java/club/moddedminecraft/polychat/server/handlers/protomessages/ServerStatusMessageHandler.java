@@ -25,7 +25,8 @@ public final class ServerStatusMessageHandler {
     public void handle(ServerProtos.ServerStatus msg, ConnectedClient author) {
         String serverId = msg.getServerId().toUpperCase();
         OnlineServer server = onlineServers.get(serverId);
-        ServerProtos.ServerStatus.ServerStatusEnum status = msg.getStatus();
+        ServerProtos.ServerStatus.ServerStatusEnum
+                status = msg.getStatus();
 
         if (server != null) {
             // forward message to other MC servers;
