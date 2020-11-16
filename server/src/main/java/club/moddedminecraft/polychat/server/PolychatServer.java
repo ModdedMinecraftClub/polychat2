@@ -5,7 +5,6 @@ import club.moddedminecraft.polychat.server.discordcommands.ExecCommand;
 import club.moddedminecraft.polychat.server.discordcommands.OnlineCommand;
 import club.moddedminecraft.polychat.server.discordcommands.RestartCommand;
 import club.moddedminecraft.polychat.server.discordcommands.TpsCommand;
-import club.moddedminecraft.polychat.core.server.handlers.*;
 
 import club.moddedminecraft.polychat.server.handlers.jdaevents.GenericJdaEventHandler;
 import club.moddedminecraft.polychat.server.handlers.jdaevents.MessageReceivedHandler;
