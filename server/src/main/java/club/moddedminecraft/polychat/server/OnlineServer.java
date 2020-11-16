@@ -77,8 +77,4 @@ public final class OnlineServer {
         return client;
     }
 
-    public String getServerChatMessage(String message) {
-        return "`[" + serverId + "] " + message + "`";
-    }
-
 }

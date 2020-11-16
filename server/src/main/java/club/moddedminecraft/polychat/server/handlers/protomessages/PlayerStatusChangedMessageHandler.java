@@ -24,7 +24,8 @@ public final class PlayerStatusChangedMessageHandler {
     @EventHandler
     public void handle(ServerProtos.ServerPlayerStatusChangedEvent msg, ConnectedClient author) {
         String serverId = msg.getNewPlayersOnline().getServerId().toUpperCase();
-        OnlineServer server = onlineServers.get(serverId);
+        String unformattedId = serverId.replaceAll("§.", "").replaceAll("[\\[\\]]", "");
+        OnlineServer server = onlineServers.get(unformattedId);
 
         if (server != null) {
             server.setPlayersOnline(msg.getNewPlayersOnline().getPlayersOnline());
@@ -41,11 +42,11 @@ public final class PlayerStatusChangedMessageHandler {
             }
 
             // send message to Discord;
-            String discordMessage = msg.getPlayerUsername() + " has " + msg.getNewPlayerStatus().toString().toLowerCase() + " the game";
+            String discordMessage = "`[" + unformattedId + "] " + msg.getPlayerUsername() + " has " + msg.getNewPlayerStatus().toString().toLowerCase() + " the game`";
             generalChannel.sendMessage(discordMessage).queue();
         } else {
             logger.error("Server with id \""
-                    + serverId
+                    + unformattedId
                     + "\" has unexpectedly sent ServerPlayerStatusChangedEvent message despite not being marked as online. Have you sent ServerInfo message on server startup?");
         }
     }

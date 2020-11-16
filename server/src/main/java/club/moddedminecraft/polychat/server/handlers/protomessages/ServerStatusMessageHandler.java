@@ -24,6 +24,8 @@ public final class ServerStatusMessageHandler {
     @EventHandler
     public void handle(ServerProtos.ServerStatus msg, ConnectedClient author) {
         String serverId = msg.getServerId().toUpperCase();
+        String unformattedId = serverId.replaceAll("§.", "").replaceAll("[\\[\\]]", "");
+
         OnlineServer server = onlineServers.get(serverId);
         ServerProtos.ServerStatus.ServerStatusEnum
                 status = msg.getStatus();
@@ -43,7 +45,7 @@ public final class ServerStatusMessageHandler {
             }
 
             generalChannel
-                    .sendMessage("`" + "[" + serverId + "]" + " Server " + status.toString().toLowerCase() + "`")
+                    .sendMessage("`[" + unformattedId + "] Server " + status.toString().toLowerCase() + "`")
                     .queue();
         }
 

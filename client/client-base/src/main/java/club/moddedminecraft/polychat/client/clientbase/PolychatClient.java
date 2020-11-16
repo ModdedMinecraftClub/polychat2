@@ -177,6 +177,11 @@ public class PolychatClient {
         return String.format("§%01x", color) + "[" + serverId + "]" + "§r";
     }
 
+    /**
+     * Get the hex value of a Minecraft color
+     * @param minecraftColor Minecraft color code
+     * @return hex color code
+     */
     public int getHexColor(int minecraftColor) {
         return colorHashMap.get(minecraftColor);
     }
