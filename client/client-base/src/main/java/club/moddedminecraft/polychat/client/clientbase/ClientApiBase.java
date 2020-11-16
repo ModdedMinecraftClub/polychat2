@@ -32,4 +32,10 @@ public interface ClientApiBase {
      */
     Path getConfigDirectory();
 
+    /**
+     * Get the runner for an in-game command
+     * @param command
+     */
+    CommandRunner getRunner(String command);
+
 }
