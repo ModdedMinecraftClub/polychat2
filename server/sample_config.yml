@@ -1,0 +1,8 @@
+# Token for the Discord bot
+token: ""
+# User ID of Discord bot's owner
+ownerId: ""
+# Prefix for Discord commands
+prefix: ""
+# Channel ID of #general
+generalChannelId: ""
