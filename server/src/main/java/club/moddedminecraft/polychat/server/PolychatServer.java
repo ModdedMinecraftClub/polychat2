@@ -1,12 +1,13 @@
-package club.moddedminecraft.polychat.core.server;
+package club.moddedminecraft.polychat.server;
 
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
-import club.moddedminecraft.polychat.core.server.discordcommands.ExecCommand;
-import club.moddedminecraft.polychat.core.server.discordcommands.OnlineCommand;
-import club.moddedminecraft.polychat.core.server.discordcommands.RestartCommand;
-import club.moddedminecraft.polychat.core.server.discordcommands.TpsCommand;
+import club.moddedminecraft.polychat.server.discordcommands.ExecCommand;
+import club.moddedminecraft.polychat.server.discordcommands.OnlineCommand;
+import club.moddedminecraft.polychat.server.discordcommands.RestartCommand;
+import club.moddedminecraft.polychat.server.discordcommands.TpsCommand;
 import club.moddedminecraft.polychat.core.server.handlers.*;
 
+import club.moddedminecraft.polychat.server.handlers.*;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;

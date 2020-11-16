@@ -1,4 +1,4 @@
-package club.moddedminecraft.polychat.core.server;
+package club.moddedminecraft.polychat.server;
 
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
