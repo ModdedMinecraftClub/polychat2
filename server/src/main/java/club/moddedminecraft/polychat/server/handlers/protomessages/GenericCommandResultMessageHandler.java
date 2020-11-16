@@ -24,8 +24,12 @@ public final class GenericCommandResultMessageHandler {
         EmbedBuilder eb = new EmbedBuilder()
                 .setTitle("Command " + "`/" + msg.getCommand() + "`" + " executed")
                 .setColor(Color.decode(msg.getColour()))
-                .addField("Server", msg.getServerId(), false)
-                .addField("Command output", msg.getCommandOutput(), false);
+                .addField("Server", msg.getServerId(), false);
+
+        if (!msg.getCommandOutput().isEmpty()) {
+            eb.addField("Command output", msg.getCommandOutput(), false);
+        }
+
         TextChannel channelCmdOriginatedFrom = jda.getTextChannelById(msg.getDiscordChannelId());
 
         if (channelCmdOriginatedFrom != null) {
