@@ -37,7 +37,7 @@ public class OnlineCommand extends Command {
                 .setTitle("Online players");
 
         int totalOnline = 0;
-        for (OnlineServer server: onlineServers.values()) {
+        for (OnlineServer server : onlineServers.values()) {
             totalOnline += server.getPlayersOnline();
             eb.addField("[" + server.getServerId() + "] " + server.getServerName() + " [" + server.getPlayersOnline() + "/" + server.getMaxPlayers() + "]",
                     String.join(", ", server.getOnlinePlayerNames()),
