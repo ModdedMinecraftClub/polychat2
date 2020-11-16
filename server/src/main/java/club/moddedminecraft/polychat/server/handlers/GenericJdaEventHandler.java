@@ -1,4 +1,4 @@
-package club.moddedminecraft.polychat.core.server.handlers;
+package club.moddedminecraft.polychat.server.handlers;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;

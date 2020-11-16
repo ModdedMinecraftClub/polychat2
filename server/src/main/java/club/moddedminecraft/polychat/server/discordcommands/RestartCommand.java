@@ -1,7 +1,7 @@
-package club.moddedminecraft.polychat.core.server.discordcommands;
+package club.moddedminecraft.polychat.server.discordcommands;
 
 import club.moddedminecraft.polychat.core.messagelibrary.CommandProtos;
-import club.moddedminecraft.polychat.core.server.OnlineServer;
+import club.moddedminecraft.polychat.server.OnlineServer;
 import com.google.protobuf.Any;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
