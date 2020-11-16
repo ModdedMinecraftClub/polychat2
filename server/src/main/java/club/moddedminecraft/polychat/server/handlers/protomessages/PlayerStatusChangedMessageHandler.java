@@ -30,8 +30,6 @@ public final class PlayerStatusChangedMessageHandler {
             server.setPlayersOnline(msg.getNewPlayersOnline().getPlayersOnline());
             server.setOnlinePlayerNames(msg.getNewPlayersOnline().getPlayerNamesList());
             ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus playerStatus = msg.getNewPlayerStatus();
-            String playerUsername = msg.getPlayerUsername();
-            String discordMessage;
 
             // forward message to other MC servers;
             Any packedMsg = Any.pack(msg);
@@ -43,17 +41,8 @@ public final class PlayerStatusChangedMessageHandler {
             }
 
             // send message to Discord;
-            if (playerStatus == ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED) {
-                discordMessage = server.getServerChatMessage(playerUsername + " has joined the game");
-                generalChannel.sendMessage(discordMessage).queue();
-            } else if (playerStatus == ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT) {
-                discordMessage = server.getServerChatMessage(playerUsername + " has left the game");
-                generalChannel.sendMessage(discordMessage).queue();
-            } else {
-                logger.error("Server with id \""
-                        + serverId
-                        + "\" sent an unrecognized PlayerStatus");
-            }
+            String discordMessage = msg.getPlayerUsername() + " has " + msg.getNewPlayerStatus().toString().toLowerCase() + " the game";
+            generalChannel.sendMessage(discordMessage).queue();
         } else {
             logger.error("Server with id \""
                     + serverId
