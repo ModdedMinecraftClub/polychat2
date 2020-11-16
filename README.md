@@ -25,6 +25,7 @@ You should now have communication between your Polychat server and client.
 ### In-game commands
 All in-game commands take the form `<command prefix><command name> <client prefix> <arguments>`. For simplicity, it will be assumed that your command prefix is the default of `!` and your client prefix is `MC`. Note that you may also use `<ALL>` in place of a client prefix to run the command on all clients.
 * `!exec`: Executes in-game Minecraft command on the first client prefix specified. Example: `!exec MC give Steve diamond 10`
+* `!restart`: Runs `/stop` on the client specified. (The name "restart" assumes the server auto-restarts upon being stopped).
 * `!tps`: Executes `/forge tps` on client by default. Example: `!tps MC`
 
 For in game commands, if you wish to override the default effect of a command you can use the `overrides` section of client config to do so. Example snippet of client config to replace the default `/forge tps` command with `/tps`¹:
