@@ -49,7 +49,7 @@ public final class PolychatServer {
         YamlConfig yamlConfig = YamlConfig.fromFilesystem(Paths.get("config.yml"));
 
         // set up TCP;
-        server = new Server(5005, 128);
+        server = new Server(yamlConfig.get("tcpPort"), yamlConfig.get("bufferSize"));
 
         // set up JDA event queue & servers hashmap;
         queue = new ConcurrentLinkedDeque<GenericEvent>();

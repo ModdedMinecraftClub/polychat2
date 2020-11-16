@@ -1,3 +1,7 @@
+# TCP Port
+tcpPort: 0
+# Buffer size
+bufferSize: 0
 # Token for the Discord bot
 token: ""
 # User ID of Discord bot's owner
