@@ -1,5 +1,5 @@
-# Ignore local config with sensitive data, to use config duplicate sample_config.yml and rename to config.yml
-config.yml
+# Ignore local config with sensitive data
+polychat.yml
 
 # Ignore Gradle project-specific cache directory
 .gradle
