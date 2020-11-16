@@ -61,7 +61,6 @@ public class PolychatClient {
         muteStorage = new MuteStorage(clientApi.getConfigDirectory());
         serverId = config.getOrDefault("serverId", "ID");
 
-        System.out.println("PC CLIENT");
         polychatProtobufMessageDispatcher.addEventHandlers(new ChatMessageHandler(clientApi, muteStorage),
                 new CommandMessageHandler(clientApi, this));
         setupInfoMessage();

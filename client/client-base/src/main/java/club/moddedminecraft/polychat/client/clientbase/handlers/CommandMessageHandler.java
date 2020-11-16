@@ -10,6 +10,7 @@ import club.moddedminecraft.polychat.core.networklibrary.ConnectedClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,16 +48,13 @@ public class CommandMessageHandler {
 
     private String parseCommand(CommandProtos.GenericCommand commandMessage) {
         // split args into list
-        ArrayList<String> args = new ArrayList<>(Arrays.asList(commandMessage.getArgs().split(" ")));
+        List<String> args = commandMessage.getArgsList();
 
         // Replaces default command with override if exists
         String command = client.getConfig().getOrDefault("overrides." + commandMessage.getDiscordCommandName(),
                 commandMessage.getDefaultCommand());
 
         int commandArgs = calculateParameters(command);
-        if (commandArgs == 0) {
-            command += " $args"; // assume all args if none (temporary)
-        }
         command = command.replace("$args", String.join(" ", args));
 
         if (args.size() < commandArgs) {
