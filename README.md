@@ -1,6 +1,6 @@
 # polychat2
 
-Polychat is a messaging protcol to exchange chat messages between Discord and multiple game servers. This repo contains the following:
+Polychat is a messaging protocol to exchange chat messages between Discord and multiple game servers. This repo contains the following:
 * Core Network and Messaging libraries
 * The Polychat server (which exchanges messages between Discord and all clients)
 * A base client interface
