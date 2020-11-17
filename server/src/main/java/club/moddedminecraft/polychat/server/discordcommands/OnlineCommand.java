@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.List;
 
 public class OnlineCommand extends Command {
 
@@ -28,7 +29,7 @@ public class OnlineCommand extends Command {
             EmbedBuilder errEb = new EmbedBuilder()
                     .setTitle("Error")
                     .setDescription("No online servers found!")
-                    .setColor(Color.RED);
+                    .setColor(Color.GREEN);
             event.reply(errEb.build());
             return;
         }
@@ -39,9 +40,16 @@ public class OnlineCommand extends Command {
         int totalOnline = 0;
         for (OnlineServer server : onlineServers.values()) {
             totalOnline += server.getPlayersOnline();
-            eb.addField("[" + server.getServerId() + "] " + server.getServerName() + " [" + server.getPlayersOnline() + "/" + server.getMaxPlayers() + "]",
-                    String.join(", ", server.getOnlinePlayerNames()),
-                    false);
+
+            String mainMsg = "[" + server.getServerId() + "] " + server.getServerName() + " [" + server.getPlayersOnline() + "/" + server.getMaxPlayers() + "]";
+            String secondaryMsg = "*" + server.getServerAddress() + "*";
+            List<String> onlinePlayersOnCurrentServer = server.getOnlinePlayerNames();
+
+            if (onlinePlayersOnCurrentServer.size() != 0) {
+                secondaryMsg += "\n" + String.join(", ", onlinePlayersOnCurrentServer);
+            }
+
+            eb.addField(mainMsg, secondaryMsg, false);
         }
 
         String description = "**Total players online:** " + totalOnline + "\n**Servers online:** " + onlineServers.keySet().size();
