@@ -1,6 +1,7 @@
 package club.moddedminecraft.polychat.server;
 
 import club.moddedminecraft.polychat.core.common.YamlConfig;
+import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
 import club.moddedminecraft.polychat.core.networklibrary.Server;
@@ -11,6 +12,7 @@ import club.moddedminecraft.polychat.server.discordcommands.TpsCommand;
 import club.moddedminecraft.polychat.server.handlers.jdaevents.GenericJdaEventHandler;
 import club.moddedminecraft.polychat.server.handlers.jdaevents.MessageReceivedHandler;
 import club.moddedminecraft.polychat.server.handlers.protomessages.*;
+import com.google.protobuf.Any;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -25,7 +27,7 @@ import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public final class PolychatServer {
@@ -36,13 +38,22 @@ public final class PolychatServer {
     private final HashMap<String, OnlineServer> onlineServers;
     private final TextChannel generalChannel;
     private final MessageReceivedHandler messageReceivedHandler;
+    private final List<String> broadcastMessages;
+
+    private int broadcastsTimer;
 
     private final static Logger logger = LoggerFactory.getLogger(PolychatServer.class);
+
     public static final int TICK_TIME_IN_MILLIS = 50;
+    public static final int BROADCAST_EVERY_X_IN_TICKS = 12000;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
         // get YAML config
         YamlConfig yamlConfig = getConfig();
+        broadcastMessages = yamlConfig.get("broadcastMsgs");
+
+        // set up broadcasts
+        broadcastsTimer = 0;
 
         // set up TCP;
         server = new Server(yamlConfig.get("tcpPort"), yamlConfig.get("bufferSize"));
@@ -95,6 +106,7 @@ public final class PolychatServer {
         def.set("generalChannelId", "");
         def.set("tcpPort", 5005);
         def.set("bufferSize", 4096);
+        def.set("broadcastMsgs", Arrays.asList("example broadcast message 1", "example broadcast message 2"));
         def.saveToFile(path);
         return def;
     }
@@ -143,6 +155,23 @@ public final class PolychatServer {
 
     private void spinOnce() {
         try {
+            if (broadcastsTimer == BROADCAST_EVERY_X_IN_TICKS) {
+                Random random = new Random();
+                int index = random.nextInt(broadcastMessages.size());
+                String broadcastMsg = broadcastMessages.get(index);
+
+                ChatProtos.ChatMessage msg = ChatProtos.ChatMessage.newBuilder()
+                        .setServerId("MMCC")
+                        .setMessage("[MMCC] " + broadcastMsg)
+                        .setMessageOffset(5)
+                        .build();
+                Any any = Any.pack(msg);
+                server.broadcastMessageToAll(any.toByteArray());
+                broadcastsTimer = 0;
+            } else {
+                broadcastsTimer += 1;
+            }
+
             for (Message message : server.poll()) {
                 polychatProtobufMessageDispatcher.handlePolychatMessage(message);
             }
