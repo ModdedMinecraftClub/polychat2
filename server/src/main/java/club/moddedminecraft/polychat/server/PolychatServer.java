@@ -100,38 +100,6 @@ public final class PolychatServer {
         );
     }
 
-    private YamlConfig getDefaultConfig(Path path) throws IOException {
-        YamlConfig def = YamlConfig.fromInMemoryString("");
-        def.set("token", "");
-        def.set("ownerId", "");
-        def.set("commandPrefix", "!");
-        def.set("generalChannelId", "");
-        def.set("tcpPort", 5005);
-        def.set("bufferSize", 4096);
-        def.set("broadcastMsgs", Arrays.asList("example broadcast message 1", "example broadcast message 2"));
-        def.saveToFile(path);
-        return def;
-    }
-
-    public YamlConfig getConfig() {
-        try {
-            Path configPath = Paths.get("polychat.yml");
-
-            if (configPath.toFile().createNewFile()) {
-                getDefaultConfig(configPath);
-                logger.error("You must have a config to use polychat! Creating default polychat.yml...");
-                System.exit(0);
-            }
-
-            return YamlConfig.fromFilesystem(configPath);
-        } catch (IOException e) {
-            logger.error("Failed to create a new config!");
-            e.printStackTrace();
-            System.exit(1);
-        }
-        return YamlConfig.fromInMemoryString("");
-    }
-
     public static void main(String[] args) {
         try {
             new PolychatServer().spin();
@@ -188,5 +156,37 @@ public final class PolychatServer {
         } catch (IOException e) {
             logger.error("Error occurred in Polychat server event loop", e);
         }
+    }
+
+    private YamlConfig getDefaultConfig(Path path) throws IOException {
+        YamlConfig def = YamlConfig.fromInMemoryString("");
+        def.set("token", "");
+        def.set("ownerId", "");
+        def.set("commandPrefix", "!");
+        def.set("generalChannelId", "");
+        def.set("tcpPort", 5005);
+        def.set("bufferSize", 4096);
+        def.set("broadcastMsgs", Arrays.asList("example broadcast message 1", "example broadcast message 2"));
+        def.saveToFile(path);
+        return def;
+    }
+
+    public YamlConfig getConfig() {
+        try {
+            Path configPath = Paths.get("polychat.yml");
+
+            if (configPath.toFile().createNewFile()) {
+                getDefaultConfig(configPath);
+                logger.error("You must have a config to use polychat! Creating default polychat.yml...");
+                System.exit(0);
+            }
+
+            return YamlConfig.fromFilesystem(configPath);
+        } catch (IOException e) {
+            logger.error("Failed to create a new config!");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return YamlConfig.fromInMemoryString("");
     }
 }
