@@ -46,7 +46,7 @@ public final class PolychatServer {
     private final static Logger logger = LoggerFactory.getLogger(PolychatServer.class);
 
     public static final int TICK_TIME_IN_MILLIS = 50;
-    public static final int BROADCAST_EVERY_X_IN_TICKS = 50;
+    public static final int BROADCAST_EVERY_X_IN_TICKS = 12000;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
         // get YAML config
