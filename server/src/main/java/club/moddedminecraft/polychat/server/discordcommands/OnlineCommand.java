@@ -46,7 +46,7 @@ public class OnlineCommand extends Command {
             List<String> onlinePlayersOnCurrentServer = server.getOnlinePlayerNames();
 
             if (onlinePlayersOnCurrentServer.size() != 0) {
-                secondaryMsg += "\n" + String.join(", ", server.getOnlinePlayerNames());
+                secondaryMsg += "\n" + String.join(", ", onlinePlayersOnCurrentServer);
             }
 
             eb.addField(mainMsg, secondaryMsg, false);
