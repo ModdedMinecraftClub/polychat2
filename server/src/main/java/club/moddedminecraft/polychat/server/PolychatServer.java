@@ -41,18 +41,20 @@ public final class PolychatServer {
     private final List<String> broadcastMessages;
 
     private int broadcastsTimer;
+    private int broadcastMsgsIndex;
 
     private final static Logger logger = LoggerFactory.getLogger(PolychatServer.class);
 
     public static final int TICK_TIME_IN_MILLIS = 50;
-    public static final int BROADCAST_EVERY_X_IN_TICKS = 12000;
+    public static final int BROADCAST_EVERY_X_IN_TICKS = 50;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
         // get YAML config
         YamlConfig yamlConfig = getConfig();
-        broadcastMessages = yamlConfig.get("broadcastMsgs");
 
         // set up broadcasts
+        broadcastMessages = yamlConfig.get("broadcastMsgs");
+        broadcastMsgsIndex = 0;
         broadcastsTimer = 0;
 
         // set up TCP;
@@ -156,9 +158,7 @@ public final class PolychatServer {
     private void spinOnce() {
         try {
             if (broadcastsTimer == BROADCAST_EVERY_X_IN_TICKS) {
-                Random random = new Random();
-                int index = random.nextInt(broadcastMessages.size());
-                String broadcastMsg = broadcastMessages.get(index);
+                String broadcastMsg = broadcastMessages.get(broadcastMsgsIndex);
 
                 ChatProtos.ChatMessage msg = ChatProtos.ChatMessage.newBuilder()
                         .setServerId("MMCC")
@@ -167,7 +167,9 @@ public final class PolychatServer {
                         .build();
                 Any any = Any.pack(msg);
                 server.broadcastMessageToAll(any.toByteArray());
+
                 broadcastsTimer = 0;
+                broadcastMsgsIndex = (broadcastMsgsIndex + 1) % broadcastMessages.size();
             } else {
                 broadcastsTimer += 1;
             }
