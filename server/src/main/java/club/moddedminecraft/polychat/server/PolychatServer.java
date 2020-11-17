@@ -34,31 +34,24 @@ public final class PolychatServer {
     private final ConcurrentLinkedDeque<GenericEvent> queue;
     private final Server server;
     private final PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher;
-    private final JDA jda;
     private final HashMap<String, OnlineServer> onlineServers;
-    private final TextChannel generalChannel;
     private final MessageReceivedHandler messageReceivedHandler;
-    private final List<String> broadcastMessages;
-
-    private int broadcastsTimer;
-    private int broadcastMsgsIndex;
+    private final Broadcaster broadcaster;
 
     private final static Logger logger = LoggerFactory.getLogger(PolychatServer.class);
 
     public static final int TICK_TIME_IN_MILLIS = 50;
-    public static final int BROADCAST_EVERY_X_IN_TICKS = 12000;
 
     private PolychatServer() throws IOException, LoginException, InterruptedException {
         // get YAML config
         YamlConfig yamlConfig = getConfig();
 
-        // set up broadcasts
-        broadcastMessages = yamlConfig.get("broadcastMsgs");
-        broadcastMsgsIndex = 0;
-        broadcastsTimer = 0;
-
         // set up TCP;
         server = new Server(yamlConfig.get("tcpPort"), yamlConfig.get("bufferSize"));
+
+        // set up broadcasts
+        List<String> broadcastMessages = yamlConfig.get("broadcastMsgs");
+        broadcaster = new Broadcaster(broadcastMessages, server);
 
         // set up JDA event queue & servers hashmap;
         queue = new ConcurrentLinkedDeque<GenericEvent>();
@@ -66,7 +59,7 @@ public final class PolychatServer {
 
         // set up JDA commands;
         CommandClient commandClient = new CommandClientBuilder()
-                .setOwnerId(yamlConfig.get("ownerId")) // will need to be retrieved from YAML;
+                .setOwnerId(yamlConfig.get("ownerId"))
                 .setPrefix(yamlConfig.get("commandPrefix"))
                 .addCommands(
                         new ExecCommand(server, onlineServers),
@@ -77,14 +70,14 @@ public final class PolychatServer {
                 .build();
 
         // set up main JDA;
-        jda = JDABuilder.createDefault(yamlConfig.get("token")) // will need to be retrieved from YAML;
+        JDA jda = JDABuilder.createDefault(yamlConfig.get("token"))
                 .addEventListeners(
                         commandClient,
                         new GenericJdaEventHandler(queue)
                 )
                 .build()
                 .awaitReady();
-        generalChannel = jda.getTextChannelById(yamlConfig.get("generalChannelId")); // same as above here;
+        TextChannel generalChannel = jda.getTextChannelById(yamlConfig.get("generalChannelId"));
         messageReceivedHandler = new MessageReceivedHandler(generalChannel, server);
 
         // set up Protobuf message handlers;
@@ -125,22 +118,7 @@ public final class PolychatServer {
 
     private void spinOnce() {
         try {
-            if (broadcastsTimer == BROADCAST_EVERY_X_IN_TICKS) {
-                String broadcastMsg = broadcastMessages.get(broadcastMsgsIndex);
-
-                ChatProtos.ChatMessage msg = ChatProtos.ChatMessage.newBuilder()
-                        .setServerId("MMCC")
-                        .setMessage("[MMCC] " + broadcastMsg)
-                        .setMessageOffset(5)
-                        .build();
-                Any any = Any.pack(msg);
-                server.broadcastMessageToAll(any.toByteArray());
-
-                broadcastsTimer = 0;
-                broadcastMsgsIndex = (broadcastMsgsIndex + 1) % broadcastMessages.size();
-            } else {
-                broadcastsTimer += 1;
-            }
+            broadcaster.tick();
 
             for (Message message : server.poll()) {
                 polychatProtobufMessageDispatcher.handlePolychatMessage(message);
