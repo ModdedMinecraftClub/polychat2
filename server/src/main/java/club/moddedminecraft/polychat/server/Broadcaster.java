@@ -13,7 +13,7 @@ public final class Broadcaster {
     private int broadcastsTimer;
     private int broadcastMsgsIndex;
 
-    public static final int BROADCAST_EVERY_X_IN_TICKS = 100;
+    public static final int BROADCAST_EVERY_X_IN_TICKS = (10 * 60 * 20);
 
     public Broadcaster(List<String> broadcastMessages, Server server) {
         this.broadcastMessages = broadcastMessages;

@@ -1,7 +1,6 @@
 package club.moddedminecraft.polychat.server;
 
 import club.moddedminecraft.polychat.core.common.YamlConfig;
-import club.moddedminecraft.polychat.core.messagelibrary.ChatProtos;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
 import club.moddedminecraft.polychat.core.networklibrary.Message;
 import club.moddedminecraft.polychat.core.networklibrary.Server;
@@ -12,7 +11,6 @@ import club.moddedminecraft.polychat.server.discordcommands.TpsCommand;
 import club.moddedminecraft.polychat.server.handlers.jdaevents.GenericJdaEventHandler;
 import club.moddedminecraft.polychat.server.handlers.jdaevents.MessageReceivedHandler;
 import club.moddedminecraft.polychat.server.handlers.protomessages.*;
-import com.google.protobuf.Any;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
