@@ -35,7 +35,6 @@ public final class Broadcaster {
 
     private void broadcast() {
         String broadcastMsg = broadcastMessages.get(broadcastMsgsIndex);
-        System.out.println(broadcastMsg);
         ChatProtos.ChatMessage msg = ChatProtos.ChatMessage.newBuilder()
                 .setServerId("MMCC")
                 .setMessage("[MMCC] " + broadcastMsg)
