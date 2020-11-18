@@ -29,13 +29,14 @@ public class OnlineCommand extends Command {
             EmbedBuilder errEb = new EmbedBuilder()
                     .setTitle("Error")
                     .setDescription("No online servers found!")
-                    .setColor(Color.GREEN);
+                    .setColor(Color.RED);
             event.reply(errEb.build());
             return;
         }
 
         EmbedBuilder eb = new EmbedBuilder()
-                .setTitle("Online players");
+                .setTitle("Online players")
+                .setColor(Color.GREEN);
 
         int totalOnline = 0;
         for (OnlineServer server : onlineServers.values()) {
