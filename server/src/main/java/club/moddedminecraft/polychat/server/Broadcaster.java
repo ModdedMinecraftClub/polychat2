@@ -7,6 +7,7 @@ import com.google.protobuf.Any;
 import java.util.List;
 
 public final class Broadcaster {
+    private final String id;
     private final String prefix;
     private final List<String> broadcastMessages;
     private final Server server;
@@ -16,8 +17,9 @@ public final class Broadcaster {
 
     public static final int BROADCAST_EVERY_X_IN_TICKS = (10 * 60 * 20);
 
-    public Broadcaster(String prefix, List<String> broadcastMessages, Server server) {
-        this.prefix = prefix;
+    public Broadcaster(String broadcastID, String broadcastPrefix, List<String> broadcastMessages, Server server) {
+        this.id = broadcastID;
+        this.prefix = broadcastPrefix;
         this.broadcastMessages = broadcastMessages;
         this.server = server;
 
@@ -38,8 +40,8 @@ public final class Broadcaster {
     private void broadcast() {
         String broadcastMsg = broadcastMessages.get(broadcastMsgsIndex);
         ChatProtos.ChatMessage msg = ChatProtos.ChatMessage.newBuilder()
-                .setServerId(prefix)
-                .setMessage("[" + prefix + "] " + broadcastMsg)
+                .setServerId(id)
+                .setMessage(prefix + broadcastMsg)
                 .setMessageOffset(5)
                 .build();
         Any any = Any.pack(msg);

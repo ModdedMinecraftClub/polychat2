@@ -48,9 +48,10 @@ public final class PolychatServer {
         server = new Server(yamlConfig.get("tcpPort"), yamlConfig.get("bufferSize"));
 
         // set up broadcasts
-        List<String> broadcastMessages = yamlConfig.get("broadcastMsgs");
-        String broadcastPrefix = yamlConfig.get("broadcastsPrefix");
-        broadcaster = new Broadcaster(broadcastPrefix, broadcastMessages, server);
+        List<String> broadcastMessages = yamlConfig.getOrDefault("broadcastMsgs", new ArrayList<String>());
+        String broadcastID = yamlConfig.getOrDefault("broadcastID", "BROADCAST");
+        String broadcastPrefix = yamlConfig.getOrDefault("broadcastPrefix", "[System]");
+        broadcaster = new Broadcaster(broadcastID, broadcastPrefix, broadcastMessages, server);
 
         // set up JDA event queue & servers hashmap;
         queue = new ConcurrentLinkedDeque<GenericEvent>();
@@ -145,6 +146,8 @@ public final class PolychatServer {
         def.set("tcpPort", 5005);
         def.set("bufferSize", 4096);
         def.set("broadcastMsgs", Arrays.asList("example broadcast message 1", "example broadcast message 2"));
+        def.set("broadcastID", "BROADCAST");
+        def.set("broadcastPrefix", "[System]");
         def.saveToFile(path);
         return def;
     }
