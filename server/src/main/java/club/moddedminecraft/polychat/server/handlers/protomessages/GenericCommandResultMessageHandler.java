@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
+import java.awt.Color;
 
 public final class GenericCommandResultMessageHandler {
     private final static Logger logger = LoggerFactory.getLogger(ServerStatusMessageHandler.class);
@@ -27,7 +27,13 @@ public final class GenericCommandResultMessageHandler {
                 .addField("Server", msg.getServerId(), false);
 
         if (!msg.getCommandOutput().isEmpty()) {
-            eb.addField("Command output", msg.getCommandOutput(), false);
+            String output = msg.getCommandOutput();
+
+            if (output.length() > 1024) {
+                output = output.substring(0, 1024);
+            }
+
+            eb.addField("Command output", output, false);
         }
 
         TextChannel channelCmdOriginatedFrom = jda.getTextChannelById(msg.getDiscordChannelId());
@@ -35,7 +41,7 @@ public final class GenericCommandResultMessageHandler {
         if (channelCmdOriginatedFrom != null) {
             channelCmdOriginatedFrom.sendMessage(eb.build()).queue();
         } else {
-            logger.error("Client told me a command was sent from a Discord channel that doesn't exist.");
+            logger.error("Client claimed a command was sent from a Discord channel that doesn't exist.");
         }
     }
 }
