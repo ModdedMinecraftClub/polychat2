@@ -45,7 +45,7 @@ public final class Broadcaster {
         String broadcastMsg = broadcastMessages.get(broadcastMsgsIndex);
         ChatProtos.ChatMessage msg = ChatProtos.ChatMessage.newBuilder()
                 .setServerId(id)
-                .setMessage(prefix + broadcastMsg)
+                .setMessage(prefix + " " + broadcastMsg)
                 .setMessageOffset(5)
                 .build();
         Any any = Any.pack(msg);
