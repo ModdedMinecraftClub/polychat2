@@ -28,6 +28,10 @@ public final class Broadcaster {
     }
 
     public void tick() {
+        if (broadcastMessages.size() == 0) {
+            return;
+        }
+
         if (broadcastsTimer == BROADCAST_EVERY_X_IN_TICKS) {
             broadcast();
             broadcastsTimer = 0;
