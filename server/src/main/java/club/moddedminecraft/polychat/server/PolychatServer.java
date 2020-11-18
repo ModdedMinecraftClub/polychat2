@@ -49,7 +49,8 @@ public final class PolychatServer {
 
         // set up broadcasts
         List<String> broadcastMessages = yamlConfig.get("broadcastMsgs");
-        broadcaster = new Broadcaster(broadcastMessages, server);
+        String broadcastPrefix = yamlConfig.get("broadcastsPrefix");
+        broadcaster = new Broadcaster(broadcastPrefix, broadcastMessages, server);
 
         // set up JDA event queue & servers hashmap;
         queue = new ConcurrentLinkedDeque<GenericEvent>();
@@ -115,9 +116,9 @@ public final class PolychatServer {
     }
 
     private void spinOnce() {
-        try {
-            broadcaster.tick();
+        broadcaster.tick();
 
+        try {
             for (Message message : server.poll()) {
                 polychatProtobufMessageDispatcher.handlePolychatMessage(message);
             }
@@ -136,6 +137,7 @@ public final class PolychatServer {
 
     private YamlConfig getDefaultConfig(Path path) throws IOException {
         YamlConfig def = YamlConfig.fromInMemoryString("");
+        def.set("broadcastsPrefix", "");
         def.set("token", "");
         def.set("ownerId", "");
         def.set("commandPrefix", "!");
