@@ -29,7 +29,7 @@ public class Polychat implements ClientApiBase, ModInitializer {
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTING.register(this::onServerStarting);
         ServerLifecycleEvents.SERVER_STARTED.register(this::onServerStarted);
-        ServerLifecycleEvents.SERVER_STOPPING.register(this::onServerStopping);
+        ServerLifecycleEvents.SERVER_STOPPED.register(this::onServerStopped);
     }
 
     public void onServerStarting(MinecraftServer server) {
@@ -54,7 +54,7 @@ public class Polychat implements ClientApiBase, ModInitializer {
         client.getCallbacks().sendServerStart();
     }
 
-    public void onServerStopping(MinecraftServer server) {
+    public void onServerStopped(MinecraftServer server) {
         client.getCallbacks().sendServerStop();
     }
 
@@ -73,8 +73,13 @@ public class Polychat implements ClientApiBase, ModInitializer {
     }
 
     public static void receiveChatMessage(String message, UUID uuid) {
-        Polychat.server.getPlayerManager().getPlayer(uuid);
-        client.getCallbacks().newChatMessage(message, message);
+        ServerPlayerEntity player = Polychat.server.getPlayerManager().getPlayer(uuid);
+        if (player == null) {
+            return;
+        }
+        String username = player.getName().asString();
+        int offset = ("<" + username + ">").length();
+        client.getCallbacks().newChatMessage(message, message.substring(offset));
     }
 
     @Override
