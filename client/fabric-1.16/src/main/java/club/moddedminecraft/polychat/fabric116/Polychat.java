@@ -1,14 +1,13 @@
 package club.moddedminecraft.polychat.fabric116;
 
 import club.moddedminecraft.polychat.client.clientbase.ClientApiBase;
+import club.moddedminecraft.polychat.client.clientbase.CommandRunner;
 import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
 import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.FabricLoader;
-import net.minecraft.network.MessageType;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -65,11 +64,13 @@ public class Polychat implements ClientApiBase, ModInitializer {
     }
 
     public static void onJoin(ServerPlayerEntity player) {
-        client.getCallbacks().playerEvent(player.getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
+        client.getCallbacks().playerEvent(player.getName().getString(),
+                ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
     }
 
     public static void onLeave(ServerPlayerEntity player) {
-        client.getCallbacks().playerEvent(player.getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
+        client.getCallbacks().playerEvent(player.getName().getString(),
+                ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
     }
 
     public static void receiveChatMessage(String message, UUID uuid) {
@@ -79,6 +80,12 @@ public class Polychat implements ClientApiBase, ModInitializer {
         }
         String username = player.getName().asString();
         int offset = ("<" + username + ">").length();
+        String content = message.substring(offset);
+        String stripped = content.stripLeading();
+        if (stripped.startsWith("!")) {
+            client.getCallbacks().newChatMessage(stripped, stripped);
+            return;
+        }
         client.getCallbacks().newChatMessage(message, message.substring(offset));
     }
 
@@ -111,5 +118,10 @@ public class Polychat implements ClientApiBase, ModInitializer {
     @Override
     public Path getConfigDirectory() {
         return FabricLoader.INSTANCE.getConfigDir();
+    }
+
+    @Override
+    public CommandRunner getRunner(String command) {
+        return new Runner(command, server);
     }
 }
