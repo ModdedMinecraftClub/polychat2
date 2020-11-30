@@ -24,6 +24,8 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Mod(modid = Polychat.MODID, name = Polychat.NAME, version = Polychat.VERSION)
 public class Polychat implements ClientApiBase {
@@ -77,7 +79,11 @@ public class Polychat implements ClientApiBase {
     public void recieveChatMessage(ServerChatEvent event) {
         String withPrefix = client.getFormattedServerId() + " " + event.getComponent().getFormattedText();
         event.setComponent(new TextComponentString(withPrefix));
-        client.getCallbacks().newChatMessage(withPrefix, event.getMessage());
+
+        // regex to remove things like _test_, **test**, ~~test~~, ***test*** etc
+        String message = event.getMessage().replaceAll("[~*_]{1,3}([^~*_]+)[~*_]{1,3}", "$1");
+
+        client.getCallbacks().newChatMessage(withPrefix, message);
     }
 
     @SubscribeEvent
