@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "ChatMessageMixin",
+    "DeathMessageMixin",
     "PlayerJoinMixin",
     "PlayerLeaveMixin",
     "TickMixin"

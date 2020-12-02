@@ -89,6 +89,10 @@ public class Polychat implements ClientApiBase, ModInitializer {
         client.getCallbacks().newChatMessage(message, message.substring(offset));
     }
 
+    public static void receiveDeathMessage(String message) {
+        client.getCallbacks().newChatMessage(message, "");
+    }
+
     @Override
     public void sendChatMessage(String s, List<UUID> uuids) {
         Text string = new LiteralText(s);
