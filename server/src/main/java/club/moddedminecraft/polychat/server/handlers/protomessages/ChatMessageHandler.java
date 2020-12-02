@@ -31,22 +31,13 @@ public final class ChatMessageHandler {
 
     private void sendMessageToDiscord(ChatProtos.ChatMessage msg) {
         String discordMsg = msg.getMessage().replaceAll("§.", "");
-        String part1;
-        String part2;
-        try {
-            part1 = discordMsg.substring(0, msg.getMessageOffset());
-            part2 = discordMsg.substring(msg.getMessageOffset());
-        } catch (StringIndexOutOfBoundsException e) {
-            logger.error("STRING OUT OF BOUNDS EXCEPTION");
-            logger.error("MESSAGE: " + msg.getMessage());
-            logger.error("OFFSET: " + msg.getMessageOffset());
-            return;
+        String frontMatter = discordMsg.substring(0, msg.getMessageOffset());
+        StringBuilder msgBuilder = new StringBuilder();
+        if (frontMatter.length() > 0) {
+            msgBuilder.append("`").append(frontMatter).append("` ");
         }
-        discordMsg = "`"
-                + part1 +
-                "` "
-                + part2;
-        generalChannel.sendMessage(discordMsg).queue();
+        msgBuilder.append(discordMsg.substring(msg.getMessageOffset()));
+        generalChannel.sendMessage(msgBuilder.toString()).queue();
     }
 
     private void sendMessageToOtherClients(ChatProtos.ChatMessage msg, ConnectedClient author) {

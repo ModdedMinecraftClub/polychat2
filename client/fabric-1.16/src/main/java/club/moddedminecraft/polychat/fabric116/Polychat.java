@@ -81,7 +81,7 @@ public class Polychat implements ClientApiBase, ModInitializer {
         String username = player.getName().asString();
         int offset = ("<" + username + ">").length();
         String content = message.substring(offset);
-        String stripped = content.stripLeading();
+        String stripped = content.trim();
         if (stripped.startsWith("!")) {
             client.getCallbacks().newChatMessage(stripped, stripped);
             return;
