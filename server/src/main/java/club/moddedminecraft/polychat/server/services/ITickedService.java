@@ -5,11 +5,6 @@ package club.moddedminecraft.polychat.server.services;
  */
 public interface ITickedService {
     /**
-     * Triggered when the application starts the service.
-     */
-    void start();
-
-    /**
      * Triggered on every tick.
      */
     void tick();

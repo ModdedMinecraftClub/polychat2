@@ -22,11 +22,9 @@ public final class BroadcasterService implements ITickedService {
         this.prefix = broadcastPrefix;
         this.broadcastMessages = broadcastMessages;
         this.server = server;
-    }
 
-    public void start() {
-        broadcastsTimer = 0;
-        broadcastMsgsIndex = 0;
+        this.broadcastsTimer = 0;
+        this.broadcastMsgsIndex = 0;
     }
 
     public void tick() {

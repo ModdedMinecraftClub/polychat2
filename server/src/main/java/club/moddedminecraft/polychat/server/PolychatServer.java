@@ -102,10 +102,6 @@ public final class PolychatServer {
             add(jdaEventQueuePollerService);
             add(serverPollerService);
         }};
-
-        for (ITickedService tickedService : tickedServices) {
-            tickedService.start();
-        }
     }
 
     public static void main(String[] args) {

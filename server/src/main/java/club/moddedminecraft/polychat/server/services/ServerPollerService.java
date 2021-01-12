@@ -19,9 +19,6 @@ public class ServerPollerService implements ITickedService {
     }
 
     @Override
-    public void start() {}
-
-    @Override
     public void tick() {
         try {
             for (Message message : server.poll()) {

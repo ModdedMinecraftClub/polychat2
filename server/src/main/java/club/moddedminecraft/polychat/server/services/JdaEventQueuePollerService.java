@@ -16,9 +16,6 @@ public class JdaEventQueuePollerService implements ITickedService {
     }
 
     @Override
-    public void start() {}
-
-    @Override
     public void tick() {
         GenericEvent nextEvent;
         while ((nextEvent = queue.poll()) != null) {
