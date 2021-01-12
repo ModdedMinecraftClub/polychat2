@@ -11,6 +11,10 @@ import club.moddedminecraft.polychat.server.discordcommands.TpsCommand;
 import club.moddedminecraft.polychat.server.handlers.jdaevents.GenericJdaEventHandler;
 import club.moddedminecraft.polychat.server.handlers.jdaevents.MessageReceivedHandler;
 import club.moddedminecraft.polychat.server.handlers.protomessages.*;
+import club.moddedminecraft.polychat.server.services.BroadcasterService;
+import club.moddedminecraft.polychat.server.services.ITickedService;
+import club.moddedminecraft.polychat.server.services.JdaEventQueuePollerService;
+import club.moddedminecraft.polychat.server.services.ServerPollerService;
 import com.jagrosh.jdautilities.command.CommandClient;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -29,12 +33,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public final class PolychatServer {
-    private final ConcurrentLinkedDeque<GenericEvent> queue;
-    private final Server server;
-    private final PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher;
-    private final HashMap<String, OnlineServer> onlineServers;
-    private final MessageReceivedHandler messageReceivedHandler;
-    private final Broadcaster broadcaster;
+    private final ArrayList<ITickedService> tickedServices;
 
     private final static Logger logger = LoggerFactory.getLogger(PolychatServer.class);
 
@@ -45,17 +44,16 @@ public final class PolychatServer {
         YamlConfig yamlConfig = getConfig();
 
         // set up TCP;
-        server = new Server(yamlConfig.get("tcpPort"), yamlConfig.get("bufferSize"));
+        Server server = new Server(yamlConfig.get("tcpPort"), yamlConfig.get("bufferSize"));
 
         // set up broadcasts
         List<String> broadcastMessages = yamlConfig.getOrDefault("broadcastMsgs", new ArrayList<String>());
         String broadcastID = yamlConfig.getOrDefault("broadcastID", "BROADCAST");
         String broadcastPrefix = yamlConfig.getOrDefault("broadcastPrefix", "[System]");
-        broadcaster = new Broadcaster(broadcastID, broadcastPrefix, broadcastMessages, server);
 
         // set up JDA event queue & servers hashmap;
-        queue = new ConcurrentLinkedDeque<GenericEvent>();
-        onlineServers = new HashMap<>();
+        ConcurrentLinkedDeque<GenericEvent> queue = new ConcurrentLinkedDeque<GenericEvent>();
+        HashMap<String, OnlineServer> onlineServers = new HashMap<>();
 
         // set up JDA commands;
         CommandClient commandClient = new CommandClientBuilder()
@@ -78,10 +76,10 @@ public final class PolychatServer {
                 .build()
                 .awaitReady();
         TextChannel generalChannel = jda.getTextChannelById(yamlConfig.get("generalChannelId"));
-        messageReceivedHandler = new MessageReceivedHandler(generalChannel, server);
+
 
         // set up Protobuf message handlers;
-        polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
+        PolychatProtobufMessageDispatcher polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
         polychatProtobufMessageDispatcher.addEventHandlers(
                 new ChatMessageHandler(generalChannel, onlineServers),
                 new PromoteMemberCommandHandler(generalChannel, onlineServers),
@@ -91,6 +89,23 @@ public final class PolychatServer {
                 new PlayerStatusChangedMessageHandler(onlineServers, generalChannel),
                 new GenericCommandResultMessageHandler(jda)
         );
+
+        // set up ticked services
+        MessageReceivedHandler messageReceivedHandler = new MessageReceivedHandler(generalChannel, server);
+
+        BroadcasterService broadcasterService = new BroadcasterService(broadcastID, broadcastPrefix, broadcastMessages, server);
+        JdaEventQueuePollerService jdaEventQueuePollerService = new JdaEventQueuePollerService(queue, messageReceivedHandler);
+        ServerPollerService serverPollerService = new ServerPollerService(server, polychatProtobufMessageDispatcher);
+
+        tickedServices = new ArrayList<ITickedService>() {{
+            add(broadcasterService);
+            add(jdaEventQueuePollerService);
+            add(serverPollerService);
+        }};
+
+        for (ITickedService tickedService : tickedServices) {
+            tickedService.start();
+        }
     }
 
     public static void main(String[] args) {
@@ -117,22 +132,8 @@ public final class PolychatServer {
     }
 
     private void spinOnce() {
-        broadcaster.tick();
-
-        try {
-            for (Message message : server.poll()) {
-                polychatProtobufMessageDispatcher.handlePolychatMessage(message);
-            }
-
-            GenericEvent nextEvent;
-            while ((nextEvent = queue.poll()) != null) {
-                if (nextEvent instanceof MessageReceivedEvent) {
-                    MessageReceivedEvent ev = (MessageReceivedEvent) nextEvent;
-                    messageReceivedHandler.handle(ev);
-                }
-            }
-        } catch (IOException e) {
-            logger.error("Error occurred in Polychat server event loop", e);
+        for (ITickedService tickedService : tickedServices) {
+            tickedService.tick();
         }
     }
 
