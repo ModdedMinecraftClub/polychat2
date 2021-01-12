@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class ServerPollerService implements ITickedService {
+public class ServerPollerService implements TickableService {
     private final Server server;
     private final PolychatProtobufMessageDispatcher dispatcher;
     private final static Logger logger = LoggerFactory.getLogger(ServerPollerService.class);

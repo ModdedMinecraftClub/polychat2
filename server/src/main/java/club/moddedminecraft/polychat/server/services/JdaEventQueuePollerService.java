@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class JdaEventQueuePollerService implements ITickedService {
+public class JdaEventQueuePollerService implements TickableService {
     private final ConcurrentLinkedDeque<GenericEvent> queue;
     private final MessageReceivedHandler messageReceivedHandler;
 

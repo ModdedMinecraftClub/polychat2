@@ -2,7 +2,6 @@ package club.moddedminecraft.polychat.server;
 
 import club.moddedminecraft.polychat.core.common.YamlConfig;
 import club.moddedminecraft.polychat.core.messagelibrary.PolychatProtobufMessageDispatcher;
-import club.moddedminecraft.polychat.core.networklibrary.Message;
 import club.moddedminecraft.polychat.core.networklibrary.Server;
 import club.moddedminecraft.polychat.server.discordcommands.ExecCommand;
 import club.moddedminecraft.polychat.server.discordcommands.OnlineCommand;
@@ -12,7 +11,7 @@ import club.moddedminecraft.polychat.server.handlers.jdaevents.GenericJdaEventHa
 import club.moddedminecraft.polychat.server.handlers.jdaevents.MessageReceivedHandler;
 import club.moddedminecraft.polychat.server.handlers.protomessages.*;
 import club.moddedminecraft.polychat.server.services.BroadcasterService;
-import club.moddedminecraft.polychat.server.services.ITickedService;
+import club.moddedminecraft.polychat.server.services.TickableService;
 import club.moddedminecraft.polychat.server.services.JdaEventQueuePollerService;
 import club.moddedminecraft.polychat.server.services.ServerPollerService;
 import com.jagrosh.jdautilities.command.CommandClient;
@@ -21,7 +20,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +31,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public final class PolychatServer {
-    private final ArrayList<ITickedService> tickedServices;
+    private final ArrayList<TickableService> tickedServices;
 
     private final static Logger logger = LoggerFactory.getLogger(PolychatServer.class);
 
@@ -97,7 +95,7 @@ public final class PolychatServer {
         JdaEventQueuePollerService jdaEventQueuePollerService = new JdaEventQueuePollerService(queue, messageReceivedHandler);
         ServerPollerService serverPollerService = new ServerPollerService(server, polychatProtobufMessageDispatcher);
 
-        tickedServices = new ArrayList<ITickedService>() {{
+        tickedServices = new ArrayList<TickableService>() {{
             add(broadcasterService);
             add(jdaEventQueuePollerService);
             add(serverPollerService);
@@ -128,7 +126,7 @@ public final class PolychatServer {
     }
 
     private void spinOnce() {
-        for (ITickedService tickedService : tickedServices) {
+        for (TickableService tickedService : tickedServices) {
             tickedService.tick();
         }
     }

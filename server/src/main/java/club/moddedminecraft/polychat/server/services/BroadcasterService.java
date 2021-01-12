@@ -6,7 +6,7 @@ import com.google.protobuf.Any;
 
 import java.util.List;
 
-public final class BroadcasterService implements ITickedService {
+public final class BroadcasterService implements TickableService {
     private final String id;
     private final String prefix;
     private final List<String> broadcastMessages;
