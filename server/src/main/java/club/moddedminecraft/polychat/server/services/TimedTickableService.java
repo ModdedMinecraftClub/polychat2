@@ -36,5 +36,5 @@ public abstract class TimedTickableService implements TickableService {
     /**
      *  Triggered every {@link TimedTickableService#intervalInTicks} ticks.
      */
-    public void onRun() {}
+    public abstract void onRun();
 }
