@@ -58,39 +58,27 @@ public final class PolychatServer {
         onlineServers = new HashMap<>();
 
         // set up JDA commands;
-        CommandClient commandClient = new CommandClientBuilder()
-                .setOwnerId(yamlConfig.get("ownerId"))
+        CommandClient commandClient = new CommandClientBuilder().setOwnerId(yamlConfig.get("ownerId"))
                 .setPrefix(yamlConfig.get("commandPrefix"))
-                .addCommands(
-                        new ExecCommand(server, onlineServers),
-                        new OnlineCommand(onlineServers),
-                        new RestartCommand(onlineServers),
-                        new TpsCommand(onlineServers)
-                )
+                .addCommands(new ExecCommand(server, onlineServers), new OnlineCommand(onlineServers),
+                        new RestartCommand(onlineServers), new TpsCommand(onlineServers))
                 .build();
 
         // set up main JDA;
         JDA jda = JDABuilder.createDefault(yamlConfig.get("token"))
-                .addEventListeners(
-                        commandClient,
-                        new GenericJdaEventHandler(queue)
-                )
-                .build()
-                .awaitReady();
+                .addEventListeners(commandClient, new GenericJdaEventHandler(queue)).build().awaitReady();
         TextChannel generalChannel = jda.getTextChannelById(yamlConfig.get("generalChannelId"));
         messageReceivedHandler = new MessageReceivedHandler(generalChannel, server);
 
         // set up Protobuf message handlers;
         polychatProtobufMessageDispatcher = new PolychatProtobufMessageDispatcher();
-        polychatProtobufMessageDispatcher.addEventHandlers(
-                new ChatMessageHandler(generalChannel, onlineServers),
+        polychatProtobufMessageDispatcher.addEventHandlers(new ChatMessageHandler(generalChannel, onlineServers),
                 new PromoteMemberCommandHandler(generalChannel, onlineServers),
                 new ServerInfoMessageHandler(onlineServers),
                 new ServerStatusMessageHandler(onlineServers, generalChannel),
                 new PlayersOnlineMessageHandler(onlineServers),
                 new PlayerStatusChangedMessageHandler(onlineServers, generalChannel),
-                new GenericCommandResultMessageHandler(jda)
-        );
+                new GenericCommandResultMessageHandler(jda));
     }
 
     public static void main(String[] args) {
@@ -131,6 +119,8 @@ public final class PolychatServer {
                     messageReceivedHandler.handle(ev);
                 }
             }
+        } catch (IllegalArgumentException e) {
+            logger.error("pain");
         } catch (IOException e) {
             logger.error("Error occurred in Polychat server event loop", e);
         }

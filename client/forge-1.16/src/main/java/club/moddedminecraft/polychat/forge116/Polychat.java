@@ -52,11 +52,16 @@ public class Polychat implements ClientApiBase {
 
     @SubscribeEvent
     public void onServerStarted(FMLServerStartedEvent event) {
-        client.getCallbacks().sendServerStart();
+        if (client != null) {
+            client.getCallbacks().sendServerStart();
+        }
     }
 
     @SubscribeEvent
     public void commandRegister(RegisterCommandsEvent event) {
+        if (client == null) {
+            return;
+        }
         event.getDispatcher().register(Commands.literal("pcmute").executes(context -> {
             CommandSource sender = context.getSource();
             ServerPlayerEntity entity = sender.asPlayer();
@@ -74,15 +79,25 @@ public class Polychat implements ClientApiBase {
 
     @SubscribeEvent
     public void onServerStopping(FMLServerStoppingEvent event) {
+        if (client == null) {
+            return;
+        }
         client.getCallbacks().cleanShutdown();
     }
 
     public void sendShutdown() {
+        if (client == null) {
+            return;
+        }
         client.getCallbacks().sendServerStop();
     }
 
     @SubscribeEvent
+
     public void receiveChatMessage(ServerChatEvent event) {
+        if (client == null) {
+            return;
+        }
         String withPrefix = client.getFormattedServerId() + " " + event.getComponent().getString();
         event.setComponent(new StringTextComponent(withPrefix));
         client.getCallbacks().newChatMessage(withPrefix, event.getMessage());
@@ -90,15 +105,26 @@ public class Polychat implements ClientApiBase {
 
     @SubscribeEvent
     public void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        client.getCallbacks().playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
+        if (client == null) {
+            return;
+        }
+        client.getCallbacks().playerEvent(event.getEntity().getName().getString(),
+                ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
     }
 
     @SubscribeEvent
     public void onLeave(PlayerEvent.PlayerLoggedOutEvent event) {
-        client.getCallbacks().playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
+        if (client == null) {
+            return;
+        }
+        client.getCallbacks().playerEvent(event.getEntity().getName().getString(),
+                ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
     }
 
     public void sendChatMessage(String message, List<UUID> uuids) {
+        if (client == null) {
+            return;
+        }
         ITextComponent string = new StringTextComponent(message);
         for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
             if (uuids.contains(player.getUniqueID())) {
@@ -116,6 +142,9 @@ public class Polychat implements ClientApiBase {
 
     @Override
     public ArrayList<String> getOnlinePlayers() {
+        if (client == null) {
+            return new ArrayList();
+        }
         ArrayList<String> players = new ArrayList<>();
         String[] playerNames = server.getPlayerList().getOnlinePlayerNames();
         players.ensureCapacity(playerNames.length);

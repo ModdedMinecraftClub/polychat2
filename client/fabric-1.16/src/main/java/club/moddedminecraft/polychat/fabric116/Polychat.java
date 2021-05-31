@@ -59,7 +59,11 @@ public class Polychat implements ClientApiBase, ModInitializer {
 
     public static void onTick() {
         if (client != null) {
-            client.update();
+            try {
+                client.update();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
         }
     }
 
