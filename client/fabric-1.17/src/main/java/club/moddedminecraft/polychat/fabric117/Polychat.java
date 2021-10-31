@@ -24,8 +24,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class Polychat implements ModInitializer, ClientApiBase {
-    private PolychatClient client;
+    static private PolychatClient client;
     private MinecraftServer server;
+
+    public static PolychatClient getClient() {
+        return client;
+    }
 
     @Override
     public void onInitialize() {
