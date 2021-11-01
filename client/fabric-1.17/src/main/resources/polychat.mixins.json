@@ -6,7 +6,7 @@
   "mixins": [
   ],
   "server": [
-    "ServerPlayNetworkHandlerMixin"
+    "PlayerManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

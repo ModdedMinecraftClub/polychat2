@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -81,7 +82,7 @@ public class Polychat implements ModInitializer, ClientApiBase {
 
     @Override
     public Path getConfigDirectory() {
-        return Path.of("./config");
+        return FabricLoader.getInstance().getConfigDir();
     }
 
     @Override
@@ -100,10 +101,6 @@ public class Polychat implements ModInitializer, ClientApiBase {
 
     private void onServerStopped(MinecraftServer ser) {
         client.getCallbacks().cleanShutdown();
-    }
-
-    private void recieveChatMessage() {
-
     }
 
     private void onJoin(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server) {

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "polychat2",
+  "id": "polychat",
   "version": "${version}",
   "name": "Polychat",
   "description": "",
@@ -18,7 +18,7 @@
     "polychat.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.12.4",
+    "fabricloader": ">=0.11.7",
     "fabric": "*",
     "minecraft": "1.17.1"
   }

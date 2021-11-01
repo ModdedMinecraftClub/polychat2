@@ -1,17 +1,27 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.0"
+    }
+}
+
 plugins {
     id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'maven-publish'
 }
+apply plugin: "com.github.johnrengelman.shadow"
 
+archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
 repositories {
-    // Add repositories to retrieve artifacts from in here.
-    // You should only use this when depending on other mods because
-    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-    // for more information about repositories.
+    jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -23,12 +33,21 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    implementation(files("../../core/message-library/build/libs/message-library-${version}.jar"))
-    implementation(files("../../core/network-library/build/libs/network-library-${version}.jar"))
-    implementation(files("../../core/common/build/libs/common-${version}.jar"))
-    implementation(files("../client-base/build/libs/client-base-${version}.jar"))
-    implementation("com.google.protobuf:protobuf-java:3.13.0")
-    implementation("org.yaml:snakeyaml:1.+")
+    modImplementation(files("../../core/message-library/build/libs/message-library-${version}.jar"))
+    modImplementation(files("../../core/network-library/build/libs/network-library-${version}.jar"))
+    modImplementation(files("../../core/common/build/libs/common-${version}.jar"))
+    modImplementation(files("../client-base/build/libs/client-base-${version}.jar"))
+    modImplementation("com.google.protobuf:protobuf-java:3.13.0")
+    modImplementation("org.yaml:snakeyaml:1.+")
+
+    // shadow the above.
+    shadow(files("../../core/message-library/build/libs/message-library-${version}.jar"))
+    shadow(files("../../core/network-library/build/libs/network-library-${version}.jar"))
+    shadow(files("../../core/common/build/libs/common-${version}.jar"))
+    shadow(files("../client-base/build/libs/client-base-${version}.jar"))
+    shadow("com.google.protobuf:protobuf-java:3.13.0")
+    shadow("org.yaml:snakeyaml:1.+")
+
 }
 
 processResources {
@@ -70,6 +89,17 @@ jar {
     }
 }
 
+shadowJar {
+    classifier = "shadow"
+    configurations = [project.configurations.shadow]
+    archiveFileName.set("${project.archivesBaseName}-${project.version}.jar")
+}
+
+remapJar {
+    dependsOn shadowJar
+    input.set shadowJar.archiveFile.get()
+}
+
 // configure the maven publication
 publishing {
     publications {
@@ -86,9 +116,6 @@ publishing {
 
     // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
+
     }
 }
