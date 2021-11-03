@@ -4,8 +4,13 @@
   "version": "${version}",
   "name": "Polychat",
   "description": "",
-  "authors": [],
-  "contact": {},
+  "authors": [
+    "Vaskel"
+  ],
+  "contact": {
+    "website": "https://moddedminecraft.club",
+    "repo": "https://github.com/moddedminecraft/polychat2"
+  },
   "license": "LGPL-3.0",
   "icon": "assets/polychat2/icon.png",
   "environment": "server",

@@ -59,6 +59,10 @@ processResources {
     }
 }
 
+shadowJar {
+    configurations = [project.configurations.shadow]
+}
+
 def targetJavaVersion = 16
 tasks.withType(JavaCompile).configureEach {
     // ensure that the encoding is set to UTF-8, no matter what the system default is
@@ -87,12 +91,18 @@ jar {
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}" }
     }
-}
-
-shadowJar {
-    classifier = "shadow"
-    configurations = [project.configurations.shadow]
-    archiveFileName.set("${project.archivesBaseName}-${project.version}.jar")
+    from configurations.shadow.collect { it.isDirectory() ? it : zipTree(it) }
+    manifest {
+        attributes([
+                "Specification-Title"     : "polychat",
+                "Specification-Vendor"    : "moddedminecraftclub",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "moddedminecraftclub",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
 
 remapJar {
