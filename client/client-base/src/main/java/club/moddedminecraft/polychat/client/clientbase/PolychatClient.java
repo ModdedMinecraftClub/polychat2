@@ -174,7 +174,7 @@ public class PolychatClient {
      */
     public String getFormattedServerId() {
         int color = config.getOrDefault("color", 14);
-        return String.format("§%01x", color) + "[" + serverId + "]" + "§r";
+        return String.format("\u00A7%01x", color) + "[" + serverId + "]" + "\u00A7r";
     }
 
     /**

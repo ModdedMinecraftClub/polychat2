@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "polychat",
+  "version": "${version}",
+  "name": "Polychat",
+  "description": "",
+  "authors": [
+    "Vaskel"
+  ],
+  "contact": {
+    "website": "https://moddedminecraft.club",
+    "repo": "https://github.com/moddedminecraft/polychat2"
+  },
+  "license": "LGPL-3.0",
+  "icon": "assets/polychat2/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "club.moddedminecraft.polychat.fabric117.Polychat"
+    ]
+  },
+  "mixins": [
+    "polychat.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.7",
+    "fabric": "*",
+    "minecraft": "1.17.1"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "club.moddedminecraft.polychat.fabric117.mixins",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [],
+  "server": [
+      "ServerPlayNetworkHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
