@@ -134,14 +134,6 @@ dependencies {
     implementation(files("../client-base/build/libs/client-base-${version}.jar"))
     implementation("com.google.protobuf:protobuf-java:3.13.0")
     implementation("org.yaml:snakeyaml:1.+")
-
-    shadow(files("../../core/message-library/build/libs/message-library-${version}.jar"))
-    shadow(files("../../core/network-library/build/libs/network-library-${version}.jar"))
-    shadow(files("../../core/common/build/libs/common-${version}.jar"))
-    shadow(files("../client-base/build/libs/client-base-${version}.jar"))
-    shadow("com.google.protobuf:protobuf-java:3.13.0")
-    shadow("org.yaml:snakeyaml:1.+")
-
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
@@ -164,6 +156,26 @@ jar {
 jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
+
+shadowJar {
+    classifier = ""
+    dependencies {
+        include("../../core/message-library/build/libs/message-library.jar")
+        include("../../core/network-library/build/libs/network-library.jar")
+        include("../../core/common/build/libs/common.jar")
+        include("com.google.protobuf:protobuf-java:3.13.0")
+        include("org.yaml:snakeyaml:1.+")
+    }
+    relocate "com.google.protobuf", "club.moddedminecraft.polychat.repack.com.google.protobuf"
+    relocate "com.yaml", "club.moddedminecraft.polychat.repack.com.yaml"
+
+}
+
+tasks.build.dependsOn shadowJar
+
+artifacts {
+    archives shadowJar
+}
 
 publishing {
     publications {
