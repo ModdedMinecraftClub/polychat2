@@ -6,6 +6,9 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
+        flatDir {
+            dirs 'lib'
+        }
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
@@ -111,19 +114,25 @@ configurations {
     shade
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.0'
-    compileOnly(files("../../core/message-library/build/libs/message-library-${version}.jar"))
-    compileOnly(files("../../core/network-library/build/libs/network-library-${version}.jar"))
-    compileOnly(files("../../core/common/build/libs/common-${version}.jar"))
-    compileOnly(files("../client-base/build/libs/client-base-${version}.jar"))
+    compileOnly(name: "message-library-${version}")
+    compileOnly(name: "network-library-${version}" )
+    compileOnly(name: "common-${version}")
+    compileOnly(name: "client-base-${version}")
     compileOnly("com.google.protobuf:protobuf-java:3.13.0")
     compileOnly("org.yaml:snakeyaml:1.+")
 
-    shade(files("../../core/message-library/build/libs/message-library-${version}.jar"))
-    shade(files("../../core/network-library/build/libs/network-library-${version}.jar"))
-    shade(files("../../core/common/build/libs/common-${version}.jar"))
-    shade(files("../client-base/build/libs/client-base-${version}.jar"))
+    shade(name: "message-library-${version}")
+    shade(name: "network-library-${version}")
+    shade(name: "common-${version}")
+    shade(name: "client-base-${version}")
     shade("com.google.protobuf:protobuf-java:3.13.0")
     shade("org.yaml:snakeyaml:1.+")
 }

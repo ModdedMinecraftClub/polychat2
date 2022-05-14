@@ -22,6 +22,9 @@ group = project.maven_group
 repositories {
     jcenter()
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
@@ -33,18 +36,18 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation(files("../../core/message-library/build/libs/message-library-${version}.jar"))
-    modImplementation(files("../../core/network-library/build/libs/network-library-${version}.jar"))
-    modImplementation(files("../../core/common/build/libs/common-${version}.jar"))
-    modImplementation(files("../client-base/build/libs/client-base-${version}.jar"))
+    modImplementation(name: "message-library-${version}")
+    modImplementation(name: "network-library-${version}")
+    modImplementation(name: "common-${version}")
+    modImplementation(name: "client-base-${version}")
     modImplementation("com.google.protobuf:protobuf-java:3.13.0")
     modImplementation("org.yaml:snakeyaml:1.+")
 
     // shadow the above.
-    shadow(files("../../core/message-library/build/libs/message-library-${version}.jar"))
-    shadow(files("../../core/network-library/build/libs/network-library-${version}.jar"))
-    shadow(files("../../core/common/build/libs/common-${version}.jar"))
-    shadow(files("../client-base/build/libs/client-base-${version}.jar"))
+    shadow(name: "message-library-${version}")
+    shadow(name: "network-library-${version}")
+    shadow(name: "common-${version}")
+    shadow(name: "../client-base/build/libs/client-base-${version}.jar")
     shadow("com.google.protobuf:protobuf-java:3.13.0")
     shadow("org.yaml:snakeyaml:1.+")
 
