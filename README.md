@@ -19,6 +19,24 @@ Polychat is a messaging protocol to exchange chat messages between Discord and m
 
 You should now have communication between your Polychat server and client.
 
+## Compiling from source
+<details><summary>Click me</summary>
+
+# Compiling
+
+To compile from source, you must first compile the ``client-base``, ``message-libary``,
+``common``, and ``network-library`` subprojects.
+
+NOTE: These require java 8 to compile, while some clients like 1.17 will need other versions of java.
+
+This can be done by going to their respective folders and running ``./gradlew build``.
+
+Then you copy the jars to `/client/<version>/libs` and finally run ``./gradlew build`` in the client 
+version you want to compile.
+
+</details>
+
+
 ## Commands
 ### General commands
 * `!help`: Direct messages the user who executed the command with a list of all commands

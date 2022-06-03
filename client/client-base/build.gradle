@@ -6,12 +6,15 @@ version = "2.0.2"
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
-    compile files("../../core/message-library/build/libs/message-library-${version}.jar")
-    compile files("../../core/network-library/build/libs/network-library-${version}.jar")
-    compile files("../../core/common/build/libs/common-${version}.jar")
+    compile name: "message-library-${version}"
+    compile name: "network-library-${version}"
+    compile name: "common-${version}"
     compile "com.google.protobuf:protobuf-java:3.13.0"
     compile "org.yaml:snakeyaml:1.+"
 }
