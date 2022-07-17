@@ -26,6 +26,12 @@ public final class ChatMessageHandler {
 
     private void sendMessageToDiscord(ChatProtos.ChatMessage msg) {
         String discordMsg = msg.getMessage().replaceAll("§.", "");
+
+        // Some mods can manage to send messages that are 0 length, so instead of trying to process them and having the server crash
+        // just return
+        if (discordMsg.length() == 0) {
+            return;
+        }
         discordMsg = "`"
                 + discordMsg.substring(0, msg.getMessageOffset()) +
                 "` "
