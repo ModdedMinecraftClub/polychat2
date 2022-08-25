@@ -19,6 +19,8 @@ buildscript {
 dependencies {
   compile 'com.google.protobuf:protobuf-java:3.0.0'
   implementation project(":network-library")
+  // Use JUnit test framework
+  testImplementation 'junit:junit:4.13'
 }
 
 protobuf {
