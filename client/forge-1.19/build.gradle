@@ -2,6 +2,7 @@ plugins {
     id 'eclipse'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '5.1.+'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
 version = '1.0'
@@ -182,6 +183,22 @@ jar {
 jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
+
+shadowJar {
+    classifier = null
+    configurations = [
+            project.configurations.shade
+    ]
+}
+
+artifacts {
+    archives shadowJar
+    shadow shadowJar
+}
+
+reobf {
+    shadowJar {}
+}
 
 publishing {
     publications {
