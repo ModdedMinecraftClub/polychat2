@@ -98,9 +98,12 @@ public class Polychat2 implements ClientApiBase
 
     @SubscribeEvent
     public void receiveChatMessage(ServerChatEvent event){
-        String withPrefix = client.getFormattedServerId() + " " + event.getMessage().getString();
+        var originalMessage = event.getMessage().getString();
+        var withPrefix = client.getFormattedServerId() + " " + originalMessage;
         event.setMessage(Component.literal(withPrefix));
-        client.getCallbacks().newChatMessage(withPrefix, event.getRawText());
+
+        var withPrefixProtoMsg = client.getFormattedServerId() + " " + event.getUsername() + ": " + originalMessage;
+        client.getCallbacks().newChatMessage(withPrefixProtoMsg, originalMessage);
     }
 
     @SubscribeEvent

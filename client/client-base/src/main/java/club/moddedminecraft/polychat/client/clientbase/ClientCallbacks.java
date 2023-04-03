@@ -57,8 +57,9 @@ public class ClientCallbacks {
      * @param message the message, formatting insensitive (no author, rank, etc)
      */
     public void newChatMessage(String content, String message) {
-        String rawContent = content.replaceAll("§.", "");
-        String rawMessage = message.replaceAll("§.", "");
+        // NEVER CHANGE THIS CODE TO RAW SIGN, IT WILL BREAK ON JDK8/11!!!
+        String rawContent = content.replaceAll("\u00A7.", "");
+        String rawMessage = message.replaceAll("\u00A7.", "");
         ChatProtos.ChatMessage chatMessage = ChatProtos.ChatMessage.newBuilder()
                 .setServerId(client.getFormattedServerId())
                 .setMessage(content)
