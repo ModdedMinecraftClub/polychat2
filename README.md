@@ -61,7 +61,7 @@ You should now have communication between your Polychat server and client.
 To compile from source, you must first compile the ``client-base``, ``message-libary``,
 ``common``, and ``network-library`` subprojects.
 
-NOTE: These require Java 8 to compile. However, some modern Minecraft clients will need newer versions of java.
+NOTE: These require Java 11 to compile. However, some modern Minecraft clients will need newer versions of java.
 
 This can be done by going to their respective folders and running ``./gradlew build``.
 

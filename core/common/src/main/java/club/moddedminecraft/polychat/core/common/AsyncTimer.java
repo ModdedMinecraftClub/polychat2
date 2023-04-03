@@ -12,7 +12,7 @@ public final class AsyncTimer{
 
     public void poll(){
         long currentTime = System.currentTimeMillis();
-        for(var entry : timerEntries){
+        for(TimerEntry entry : timerEntries){
             entry.runIfRequired(currentTime);
         }
     }
