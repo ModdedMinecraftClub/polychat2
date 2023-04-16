@@ -8,3 +8,8 @@ dependencies {
 	// Use JUnit test framework
 	testImplementation 'junit:junit:4.13'
 }
+
+compileJava {
+	sourceCompatibility = '1.8'
+	targetCompatibility = '1.8'
+}
