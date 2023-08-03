@@ -4,7 +4,7 @@ plugins {
 }
 
 version = "2.0.2"
-mainClassName = 'club.moddedminecraft.polychat.core.server.PolychatServer'
+mainClassName = 'club.moddedminecraft.polychat.server.PolychatServer'
 
 repositories {
     mavenCentral()
