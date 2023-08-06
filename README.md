@@ -7,6 +7,7 @@ This repo contains the following:
 * A base client interface
 * Minecraft Clients:
     * Spigot 1.4.7
+    * Forge 1.7.10
     * Forge 1.12.2
     * Forge 1.16.4
     * Fabric 1.17.1
