@@ -18,3 +18,8 @@ dependencies {
     compile "com.google.protobuf:protobuf-java:3.13.0"
     compile "org.yaml:snakeyaml:1.+"
 }
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
