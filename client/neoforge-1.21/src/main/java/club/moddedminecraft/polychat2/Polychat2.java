@@ -1,35 +1,35 @@
 package club.moddedminecraft.polychat2;
 
-import club.moddedminecraft.polychat.client.clientbase.ClientApiBase;
-import club.moddedminecraft.polychat.client.clientbase.CommandRunner;
-import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
-import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
-import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.fml.loading.FMLPaths;
-import org.slf4j.Logger;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
+import com.mojang.logging.LogUtils;
+
+import club.moddedminecraft.polychat.client.clientbase.ClientApiBase;
+import club.moddedminecraft.polychat.client.clientbase.CommandRunner;
+import club.moddedminecraft.polychat.client.clientbase.PolychatClient;
+import club.moddedminecraft.polychat.core.messagelibrary.ServerProtos;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.ServerChatEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Polychat2.MODID)
@@ -47,23 +47,23 @@ public class Polychat2 implements ClientApiBase
     public Polychat2()
     {
         // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
         Runtime.getRuntime().addShutdownHook(new Thread(this::sendShutdown));
     }
 
     @SubscribeEvent
-    public void onTick(TickEvent.ServerTickEvent event){
-        if(client != null){
-            client.update();
+    public void onTick(ServerTickEvent event){
+        if(this.client != null){
+            this.client.update();
         }
     }
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
     {
-        server = event.getServer();
-        client = new PolychatClient(this);
-        client.getCallbacks().sendServerStart();
+        this.server = event.getServer();
+        this.client = new PolychatClient(this);
+        this.client.getCallbacks().sendServerStart();
     }
 
     @SubscribeEvent
@@ -74,13 +74,13 @@ public class Polychat2 implements ClientApiBase
             ServerPlayer entity = sender.getPlayerOrException();
             UUID uuid = entity.getUUID();
 
-            if(client.getMuteStorage().checkPlayer(uuid)){
-                client.getMuteStorage().removePlayer(uuid);
-                sender.sendSuccess(Component.literal("§9Unmuted all other servers and Discord."), false);
+            if(this.client.getMuteStorage().checkPlayer(uuid)){
+                this.client.getMuteStorage().removePlayer(uuid);
+                sender.sendSuccess(() -> Component.literal("§9Unmuted all other servers and Discord."), false);
             }
             else {
-                client.getMuteStorage().addPlayer(uuid);
-                sender.sendSuccess(Component.literal("§9Muted all other servers and Discord."), false);
+                this.client.getMuteStorage().addPlayer(uuid);
+                sender.sendSuccess(() -> Component.literal("§9Muted all other servers and Discord."), false);
             }
 
             return 0;
@@ -89,53 +89,53 @@ public class Polychat2 implements ClientApiBase
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppedEvent event){
-        client.getCallbacks().cleanShutdown();
+        this.client.getCallbacks().cleanShutdown();
     }
 
     private void sendShutdown(){
-        client.getCallbacks().sendServerStop();
+        this.client.getCallbacks().sendServerStop();
     }
 
     @SubscribeEvent
     public void receiveChatMessage(ServerChatEvent event){
         var originalMessage = event.getMessage().getString();
-        var withPrefix = client.getFormattedServerId() + " " + originalMessage;
+        var withPrefix = this.client.getFormattedServerId() + " " + originalMessage;
         event.setMessage(Component.literal(withPrefix));
 
-        var withPrefixProtoMsg = client.getFormattedServerId() + " " + event.getUsername() + ": " + originalMessage;
-        client.getCallbacks().newChatMessage(withPrefixProtoMsg, originalMessage);
+        var withPrefixProtoMsg = this.client.getFormattedServerId() + " " + event.getUsername() + ": " + originalMessage;
+        this.client.getCallbacks().newChatMessage(withPrefixProtoMsg, originalMessage);
     }
 
     @SubscribeEvent
     public void onJoin(PlayerEvent.PlayerLoggedInEvent event){
-        client.getCallbacks().playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
+        this.client.getCallbacks().playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.JOINED);
     }
 
     @SubscribeEvent
     public void onLeave(PlayerEvent.PlayerLoggedOutEvent event){
-        client.getCallbacks().playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
+        this.client.getCallbacks().playerEvent(event.getEntity().getName().getString(), ServerProtos.ServerPlayerStatusChangedEvent.PlayerStatus.LEFT);
     }
 
     @Override
     public void sendChatMessage(String message, List<UUID> uuids) {
         Component component = Component.literal(message);
-        for(ServerPlayer player : server.getPlayerList().getPlayers()){
+        for(ServerPlayer player : this.server.getPlayerList().getPlayers()){
             if(uuids.contains(player.getUUID())){
                 continue;
             }
             player.sendSystemMessage(component);
         }
-        server.sendSystemMessage(component);
+        this.server.sendSystemMessage(component);
     }
 
     @Override
     public int getMaxPlayers() {
-        return server.getMaxPlayers();
+        return this.server.getMaxPlayers();
     }
 
     @Override
     public ArrayList<String> getOnlinePlayers() {
-        return Arrays.stream(server.getPlayerList().getPlayerNamesArray()).collect(Collectors.toCollection(ArrayList::new));
+        return Arrays.stream(this.server.getPlayerList().getPlayerNamesArray()).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -145,7 +145,7 @@ public class Polychat2 implements ClientApiBase
 
     @Override
     public CommandRunner getRunner(String command) {
-        return new Runner(command, server);
+        return new Runner(command, this.server);
     }
 
 }
