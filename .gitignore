@@ -21,6 +21,9 @@ logs
 # IntelliJ Idea
 .idea
 
+#VSCode
+.vscode
+
 # Emacs
 .projectile
 .project
