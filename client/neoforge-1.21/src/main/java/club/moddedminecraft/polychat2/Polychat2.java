@@ -52,7 +52,7 @@ public class Polychat2 implements ClientApiBase
     }
 
     @SubscribeEvent
-    public void onTick(ServerTickEvent event){
+    public void onTick(ServerTickEvent.Post event){
         if(this.client != null){
             this.client.update();
         }
