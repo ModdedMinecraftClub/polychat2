@@ -42,8 +42,8 @@ public class Runner extends CommandRunner implements CommandSource {
     }
 
     @Override
-    public void sendSystemMessage(Component p_230797_) {
-        String text = p_230797_.getString();
+    public void sendSystemMessage(Component component) {
+        String text = component.getString();
         this.output.add(text.replaceAll("§.", ""));
     }
 
