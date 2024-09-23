@@ -9,6 +9,7 @@ public class OnlinePlayerThread {
     public OnlinePlayerThread(PolychatClient client) {
         this.client = client;
         this.thread = new Thread(this::run);
+        this.thread.setDaemon(true);
     }
 
     public void start() {
@@ -22,7 +23,7 @@ public class OnlinePlayerThread {
     private void run() {
         while (true) {
             try {
-                client.getCallbacks().sendPlayers();
+                this.client.getCallbacks().sendPlayers();
                 Thread.sleep(SLEEP_TIME_SECONDS * 1000);
             } catch (InterruptedException ignored) {
             }
