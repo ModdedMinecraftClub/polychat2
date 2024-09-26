@@ -1,0 +1,16 @@
+[
+{
+  "modid": "polychat",
+  "name": "Polychat Client",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["john01dav"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
