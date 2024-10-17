@@ -155,10 +155,10 @@ dependencies {
     compileOnly("com.google.protobuf:protobuf-java:3.13.0")
     compileOnly("org.yaml:snakeyaml:2.0")
 
-    jarJar(group: "club.moddedminecraft.polychat.core.messagelibrary", name: "message-library", version: "[2.0.2, 2.0.3)")
-    jarJar(group: "club.moddedminecraft.polychat.core.networklibrary", name: "network-library", version: "[2.0.2, 2.0.3)")
-    jarJar(group: "cclub.moddedminecraft.polychat.core.common", name: "common", version: "[2.0.2, 2.0.3)")
-    jarJar(group: "club.moddedminecraft.polychat.client.clientbase", name: "client-base", version: "[2.0.2, 2.0.3)")
+    jarJar(group: "club.moddedminecraft.polychat.core.messagelibrary", name: "message-library", version: "${version}")
+    jarJar(group: "club.moddedminecraft.polychat.core.networklibrary", name: "network-library", version: "${version}")
+    jarJar(group: "cclub.moddedminecraft.polychat.core.common", name: "common", version: "${version}")
+    jarJar(group: "club.moddedminecraft.polychat.client.clientbase", name: "client-base", version: "${version}")
     jarJar(group: "com.google.protobuf", name: "protobuf-java", version: "[3.13, 3.14)")
     jarJar(group: "org.yaml", name: "snakeyaml", version: "[2.0, 2.1)")
 
