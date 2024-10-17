@@ -1,1 +1,22 @@
+name: Build Polychat Clients
 
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        #If we specify a version, that can work out nicely.
+        description: 'Polychat version to build'
+        required: true
+
+
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    - name: test
+      run: |
+        echo "test"
