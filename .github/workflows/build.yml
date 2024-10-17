@@ -38,7 +38,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
           name: common-${{ inputs.version }}.jar
-          path: common/build/libs/common-${{ inputs.version }}.jar
+          path: core/common/build/libs/common-${{ inputs.version }}.jar
 
   message-library:
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
           name: message-library-${{ inputs.version }}.jar
-          path: message-library/build/libs/message-library-${{ inputs.version }}.jar
+          path: core/message-library/build/libs/message-library-${{ inputs.version }}.jar
 
   network-library:
     runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
           name: network-library-${{ inputs.version }}.jar
-          path: network-library/build/libs/network-library-${{ inputs.version }}.jar
+          path: core/network-library/build/libs/network-library-${{ inputs.version }}.jar
 
 
   client-base:
