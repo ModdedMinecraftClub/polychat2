@@ -33,7 +33,6 @@ jobs:
       run: |
         cd core
         ./gradlew -Pversion=${{ inputs.version }} :common:build
-        ls common/build/libs
 
     - name: Upload Common
       uses: actions/upload-artifact@v4
@@ -57,7 +56,6 @@ jobs:
       run: |
         cd core
         ./gradlew -Pversion=${{ inputs.version }} :message-library:build
-        ls message-library/build/libs
 
     - name: Upload Message Library
       uses: actions/upload-artifact@v4
@@ -81,7 +79,6 @@ jobs:
       run: |
         cd core
         ./gradlew -Pversion=${{ inputs.version }} :network-library:build
-        ls network-library/build/libs
 
     - name: Upload Network Library
       uses: actions/upload-artifact@v4
@@ -126,6 +123,7 @@ jobs:
       run: |
         cd client/client-base
         ./gradlew -Pversion=${{ inputs.version }} build
+        ls build/libs
 
 
     - name: Upload Client Base
