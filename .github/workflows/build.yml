@@ -31,14 +31,14 @@ jobs:
     
     - name: Build Common
       run: |
-        cd core/common
-        ./gradlew -Pversion=${{ inputs.version }} build
+        cd core
+        ./gradlew -Pversion=${{ inputs.version }} :common:build
 
     - name: Upload Common
       uses: actions/upload-artifact@v4
       with:
           name: common-${{ inputs.version }}.jar
-          path: build/libs/common-${{ inputs.version }}.jar
+          path: common/build/libs/common-${{ inputs.version }}.jar
 
   message-library:
     runs-on: ubuntu-latest
@@ -54,14 +54,14 @@ jobs:
     
     - name: Build Message Library
       run: |
-        cd core/message-library
-        ./gradlew -Pversion=${{ inputs.version }} build
+        cd core
+        ./gradlew -Pversion=${{ inputs.version }} :message-library:build
 
     - name: Upload Message Library
       uses: actions/upload-artifact@v4
       with:
           name: message-library-${{ inputs.version }}.jar
-          path: build/libs/message-library-${{ inputs.version }}.jar
+          path: message-library/build/libs/message-library-${{ inputs.version }}.jar
 
   network-library:
     runs-on: ubuntu-latest
@@ -77,14 +77,14 @@ jobs:
     
     - name: Build Network Library
       run: |
-        cd core/network-library
-        ./gradlew -Pversion=${{ inputs.version }} build
+        cd core
+        ./gradlew -Pversion=${{ inputs.version }} :network-library:build
 
     - name: Upload Network Library
       uses: actions/upload-artifact@v4
       with:
           name: network-library-${{ inputs.version }}.jar
-          path: build/libs/network-library-${{ inputs.version }}.jar
+          path: network-library/build/libs/network-library-${{ inputs.version }}.jar
 
 
   client-base:
