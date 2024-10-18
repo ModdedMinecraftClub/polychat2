@@ -132,6 +132,57 @@ jobs:
           path: client/client-base/build/libs/client-base-${{ inputs.version }}.jar
 
 
+  bukkit-1-7-10:
+    runs-on: ubuntu-latest
+    needs: [client-base]
+
+    steps:
+    
+    - uses: actions/checkout@v4
+
+    - name: Download common
+      uses: actions/download-artifact@v4
+      with:
+        name: common-${{ inputs.version }}.jar
+        path: client/bukkit-1.7.10/libs
+
+    - name: Download message-library
+      uses: actions/download-artifact@v4
+      with:
+        name: message-library-${{ inputs.version }}.jar
+        path: client/bukkit-1.7.10/libs
+
+    - name: Download network-library
+      uses: actions/download-artifact@v4
+      with:
+        name: network-library-${{ inputs.version }}.jar
+        path: client/bukkit-1.7.10/libs
+
+    - name: Download client-base
+      uses: actions/download-artifact@v4
+      with:
+        name: client-base-${{ inputs.version }}.jar
+        path: client/bukkit-1.7.10/libs
+    
+    - name: Set up JDK 8
+      uses: actions/setup-java@v4
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+  
+    - name: Build Bukkit 1.7.10
+      run: |
+        cd client/bukkit-1.7.10
+        ./gradlew -Pversion=${{ inputs.version }} build
+
+
+    - name: Upload Bukkit 1.7.10
+      uses: actions/upload-artifact@v4
+      with:
+          name: polychat-bukkit1710-${{ inputs.version }}.jar
+          path: client/bukkit-1.7.10/build/libs/polychat-bukkit1710-${{ inputs.version }}.jar
+
+
 
   bundle-archives:
     runs-on: ubuntu-latest
