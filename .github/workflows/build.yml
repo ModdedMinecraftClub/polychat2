@@ -187,14 +187,14 @@ jobs:
   bundle-archives:
     runs-on: ubuntu-latest
     #TODO change this to depend on all the actual mod jars, not client base
-    needs: [client-base]
+    needs: [bukkit-1-7-10]
 
     steps:
     #TODO change this to download each actual mod jar, not client base
-    - name: Download Client Base
+    - name: Download Bukkit 1.7.10
       uses: actions/download-artifact@v4
       with:
-        name: client-base-${{ inputs.version }}.jar
+        name: polychat-bukkit1710-${{ inputs.version }}.jar
         path: archives/
         
     - name: Cleanup Old Archives
