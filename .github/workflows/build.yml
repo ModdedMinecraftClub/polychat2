@@ -130,7 +130,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
           name: client-base-${{ inputs.version }}.jar
-          path: build/libs/client-base-${{ inputs.version }}.jar
+          path: client/client-base/build/libs/client-base-${{ inputs.version }}.jar
 
 
 
