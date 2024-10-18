@@ -151,7 +151,7 @@ jobs:
       uses: geekyeggo/delete-artifact@v5
       with:
           name: |
-              common-library-${{ inputs.version }}.jar
+              common-${{ inputs.version }}.jar
               client-base-${{ inputs.version }}.jar
               message-library-${{ inputs.version }}.jar
               network-library-${{ inputs.version }}.jar
